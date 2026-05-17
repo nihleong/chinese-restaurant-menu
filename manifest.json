@@ -1,11 +1,11 @@
 {
-  "name": "汉字 Menu Master",
-  "short_name": "Menu Master",
+  "name": "食 Menu Master",
+  "short_name": "食 Menu",
   "description": "Learn Chinese restaurant menu characters daily",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FDF6E3",
+  "background_color": "#8B1A1A",
   "theme_color": "#8B1A1A",
   "icons": [
     {
