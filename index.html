@@ -808,7 +808,8 @@ function toast(m){
 document.getElementById('dlbl').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 updateStreak();rCard();rCatTabs();rMenu();rPCats();rPhrases();updateStageButtons();
 setTimeout(function(){initHanziWriter(daily[0].ch);},600);
-if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+// Auto-unregister any previously installed service worker to ensure fresh loads
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(regs=>{regs.forEach(r=>r.unregister());});}
 </script>
 </body>
 </html>
