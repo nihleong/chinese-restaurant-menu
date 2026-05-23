@@ -4,409 +4,342 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#8B1A1A">
-<meta name="color-scheme" content="light">
-<link rel="manifest" href="manifest.json">
+<meta name="color-scheme" content="light only">
 <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
 <title>食 Menu Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500&display=swap');
-/* Force light mode — prevent iOS Dark Mode from inverting colours */
-:root { color-scheme: light only; }
-html { background: #FDF6E3 !important; }
-
+:root{color-scheme:light only}
+html{background:#FDF6E3 !important}
 :root{--red:#8B1A1A;--red2:#C0392B;--gold:#D4A847;--gold2:#F0C862;--cream:#FDF6E3;--ink:#1a1008;--muted:#3d2e10;--paper:#FFFDF5;--paper2:#EED898;--bdr:rgba(139,26,26,0.18);--shd:0 4px 20px rgba(139,26,26,0.1)}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans SC',sans-serif;background:var(--cream) !important;color:var(--ink) !important;min-height:100vh;overflow-x:hidden}
-header{background:var(--red);padding:.8rem 1.1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--cream);color:var(--ink);font-family:'Noto Sans SC',sans-serif}
+#app{display:flex;flex-direction:column;height:100%}
+
+/* ── HEADER ── */
+header{background:var(--red);flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.header-inner{padding:.75rem 1.1rem;display:flex;align-items:center;justify-content:space-between;max-width:900px;margin:0 auto}
 .hl{display:flex;align-items:center;gap:9px}
 .logo{font-family:'Noto Serif SC',serif;font-size:26px;color:var(--gold);line-height:1}
 .ht h1{font-size:13px;font-weight:500;color:var(--gold2);letter-spacing:2px;text-transform:uppercase}
 .ht p{font-size:10px;color:rgba(240,200,98,.55);letter-spacing:1px}
 .streak{display:flex;align-items:center;gap:5px;background:rgba(212,168,71,.15);border:1px solid var(--gold);border-radius:20px;padding:5px 11px;color:var(--gold2);font-size:12px;font-weight:500}
-nav{background:var(--paper);border-bottom:1px solid var(--bdr);display:flex;overflow-x:auto;scrollbar-width:none}
+
+/* ── NAV ── */
+nav{background:var(--paper);border-bottom:1px solid var(--bdr);display:flex;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 nav::-webkit-scrollbar{display:none}
-nav button{flex-shrink:0;padding:12px 14px;border:none;background:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;font-size:11.5px;color:var(--muted);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
-nav button.active{color:var(--red);border-bottom-color:var(--red);font-weight:500}
-nav button:hover{color:var(--red)}
-main{max-width:840px;margin:0 auto;padding:1.2rem}
-section{display:none}
-section.active{display:block}
+.nav-btn{flex-shrink:0;padding:12px 16px;border:none;background:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;font-size:11.5px;color:var(--muted);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.nav-btn.active{color:var(--red);border-bottom-color:var(--red);font-weight:500}
+.nav-btn:hover{color:var(--red)}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page{display:none;max-width:900px;margin:0 auto;padding:1.2rem 1rem 4rem}
+.page.active{display:block}
+
+/* ── SHARED ── */
 .sh{display:flex;align-items:center;gap:8px;margin-bottom:1.2rem}
 .sh h2{font-family:'Noto Serif SC',serif;font-size:19px;color:var(--red)}
 .orn{color:var(--gold);font-size:16px}
-/* DAILY */
-.dtop{text-align:center;margin-bottom:1.4rem}
-.dtop h2{font-family:'Noto Serif SC',serif;font-size:21px;color:var(--red);margin-bottom:3px}
-.dtop p{font-size:11px;color:var(--muted)}
-.pbar{background:var(--paper2);border-radius:8px;height:7px;margin:.7rem auto;max-width:260px;overflow:hidden}
-.pfill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:8px;transition:width .4s}
-.cc{background:var(--paper);border:1px solid var(--bdr);border-radius:16px;padding:1.6rem;margin-bottom:1.1rem;box-shadow:var(--shd);text-align:center;position:relative;overflow:hidden}
-.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--red),var(--gold))}
-.cnl{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:.4rem}
-.lvb{display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;letter-spacing:1px;margin-bottom:.4rem;border:1px solid}
-.l1{background:rgba(39,174,96,.08);border-color:rgba(39,174,96,.4);color:#1e8449}
-.l2{background:rgba(41,128,185,.08);border-color:rgba(41,128,185,.4);color:#1a5276}
-.l3{background:rgba(139,26,26,.08);border-color:var(--bdr);color:var(--red)}
-.bc{font-family:'Noto Serif SC',serif;font-size:88px;color:var(--ink);line-height:1.1;margin:.3rem 0;cursor:pointer;transition:transform .15s;display:inline-block;user-select:none}
-.bc:hover{transform:scale(1.06)}
-.cp{font-size:19px;color:var(--red);font-weight:300;letter-spacing:2px;margin:.3rem 0}
-.cm{font-size:16px;color:var(--ink);margin:.3rem 0}
-.cs{font-size:11px;color:var(--muted);margin:.2rem 0}
-.ctx{background:rgba(139,26,26,.04);border-left:3px solid var(--red);border-radius:4px;padding:9px 13px;margin-top:.8rem;text-align:left}
-.ctx .cn{font-family:'Noto Serif SC',serif;font-size:16px;color:var(--ink);margin-bottom:2px}
-.ctx .en{font-size:11px;color:var(--muted)}
-.ctip{font-size:11px;color:var(--muted);margin-top:.7rem;padding:7px 11px;background:rgba(212,168,71,.08);border-radius:8px;text-align:left;line-height:1.5}
-.spk{margin-top:.8rem;background:var(--red);color:white;border:none;border-radius:25px;padding:8px 20px;font-size:13px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:background .2s}
-.spk:hover{background:var(--red2)}
-.cnav{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem}
-.nb{background:white;border:1px solid var(--bdr);border-radius:10px;padding:8px 16px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;font-size:12px;color:var(--muted);transition:all .2s}
-.nb:hover{border-color:var(--red);color:var(--red)}
-.nb:disabled{opacity:.3;cursor:not-allowed}
-/* QUIZ */
-.qcard{background:var(--paper);border:1px solid var(--bdr);border-radius:16px;padding:1.8rem;text-align:center;box-shadow:var(--shd);margin-bottom:1rem}
-.qq{font-family:'Noto Serif SC',serif;font-size:72px;color:var(--ink);margin-bottom:1rem}
-.qopts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:.8rem}
-.qopt{background:white;border:1.5px solid var(--bdr);border-radius:10px;padding:13px 11px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;font-size:13px;transition:all .2s;text-align:center}
-.qopt:hover{border-color:var(--gold);background:rgba(212,168,71,.05)}
-.qopt.ok{border-color:#27ae60;background:#eafaf1;color:#1e8449}
-.qopt.no{border-color:#c0392b;background:#fdedec;color:#c0392b}
-/* CAMERA */
-.cambox{background:var(--paper);border:2px dashed var(--bdr);border-radius:16px;padding:1.5rem;text-align:center;margin-bottom:1rem}
-.cambox h3{font-family:'Noto Serif SC',serif;font-size:17px;color:var(--red);margin-bottom:.5rem}
-.cambox p{font-size:12px;color:var(--muted);margin-bottom:1rem;line-height:1.6}
-.cbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.cbtn{background:var(--red);color:white;border:none;border-radius:25px;padding:10px 20px;font-size:13px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:background .2s}
-.cbtn:hover{background:var(--red2)}
-.cbtn.sec{background:white;color:var(--red);border:1.5px solid var(--red)}
-.cbtn.sec:hover{background:rgba(139,26,26,.05)}
-.ores{background:white;border:1px solid var(--bdr);border-radius:12px;padding:1.2rem;margin-top:1rem;display:none}
-.ores h4{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem}
-.orow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bdr)}
-.orow:last-child{border-bottom:none}
-.obig{font-family:'Noto Serif SC',serif;font-size:36px;color:var(--ink);min-width:44px;cursor:pointer}
-.oinfo{flex:1}
-.opinyin{font-size:12px;color:var(--red);margin-bottom:2px}
-.oen{font-size:14px;color:var(--ink)}
-.odesc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4}
-.ospk{background:none;border:1px solid var(--bdr);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--red);flex-shrink:0;transition:all .2s}
-.ospk:hover{background:var(--red);color:white}
-.oload{text-align:center;padding:1.2rem;color:var(--muted);font-size:13px;display:none}
-/* MENU */
-.ctabs,.ptabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.2rem}
-.ctab,.ptab{background:white;border:1px solid var(--bdr);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;color:var(--muted);transition:all .2s}
-.ctab.on,.ptab.on,.ctab:hover,.ptab:hover{background:var(--red);color:white;border-color:var(--red)}
+
+/* ── MENU ── */
 .msrch{width:100%;padding:9px 14px;border:1px solid var(--bdr);border-radius:10px;font-family:'Noto Sans SC',sans-serif;font-size:13px;background:white;color:var(--ink);margin-bottom:1rem;outline:none}
 .msrch:focus{border-color:var(--red)}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
-.mi{background:white;border:1px solid var(--bdr);border-radius:11px;padding:12px 14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
-.mi:hover{box-shadow:var(--shd);border-color:rgba(139,26,26,.4)}
-.mchar{font-family:'Noto Serif SC',serif;font-size:26px;color:var(--ink);min-width:40px;text-align:center;line-height:1.2}
+.ctabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1rem}
+.ctab{background:white;border:1px solid var(--bdr);border-radius:20px;padding:5px 13px;font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;color:var(--muted);transition:all .2s}
+.ctab.on,.ctab:hover{background:var(--red);color:white;border-color:var(--red)}
+.mcount{font-size:11px;color:var(--muted);margin-bottom:.8rem}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+
+/* Menu item card */
+.mi{background:white;border:1px solid var(--bdr);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;position:relative}
+.mi:hover{box-shadow:var(--shd);border-color:rgba(139,26,26,.35)}
+.mi-top{display:flex;align-items:center;gap:11px}
+.mchar{font-family:'Noto Serif SC',serif;font-size:28px;color:var(--ink);min-width:40px;text-align:center;line-height:1.2;flex-shrink:0}
 .minfo{flex:1;min-width:0}
-.mpinyin{font-size:11px;color:var(--red);margin-bottom:1px}
+.mpinyin{font-size:11px;color:var(--red);margin-bottom:1px;font-weight:500}
 .men{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:2px}
-.mdesc{font-size:10.5px;color:var(--muted);line-height:1.3}
+.mdesc{font-size:10.5px;color:var(--muted);line-height:1.35}
 .mtag{display:inline-block;font-size:9px;padding:1px 7px;border-radius:10px;margin-top:3px}
 .tv{background:rgba(39,174,96,.1);color:#1e8449;border:1px solid rgba(39,174,96,.3)}
 .th{background:rgba(192,57,43,.1);color:#c0392b;border:1px solid rgba(192,57,43,.3)}
 .tp{background:rgba(212,168,71,.15);color:#856404;border:1px solid rgba(212,168,71,.4)}
 .ts{background:rgba(41,128,185,.1);color:#1a5276;border:1px solid rgba(41,128,185,.3)}
-.sspk{background:none;border:1px solid var(--bdr);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--red);flex-shrink:0;transition:all .2s}
+.mi-btns{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.sspk{background:none;border:1px solid var(--bdr);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--red);transition:all .2s;flex-shrink:0}
 .sspk:hover{background:var(--red);color:white}
-/* PHRASES */
+.anim-btn{background:none;border:1px solid var(--bdr);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all .2s;font-size:13px;flex-shrink:0}
+.anim-btn:hover{background:var(--gold);color:white;border-color:var(--gold)}
+.anim-btn.active{background:var(--gold);color:white;border-color:var(--gold)}
+
+/* Animation panel — slides open inside the card */
+.mi-anim{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--bdr)}
+.mi-anim.open{display:block}
+/* Per-character section */
+.hz-chars{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.hz-char-block{display:flex;flex-direction:column;align-items:center;gap:6px}
+.hz-char-label{font-family:'Noto Serif SC',serif;font-size:11px;color:var(--muted);letter-spacing:.06em}
+.hz-target-wrap{background:var(--cream);border:1px solid var(--bdr);border-radius:8px;overflow:hidden}
+/* Shared controls row */
+.hz-controls{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.hz-btn{background:white;border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;font-size:11px;color:var(--muted);cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .2s;white-space:nowrap}
+.hz-btn:hover{border-color:var(--red);color:var(--red)}
+.hz-btn.primary{background:var(--red);border-color:var(--red);color:white}
+/* Active character tab highlight */
+.hz-char-block.active .hz-target-wrap{border-color:var(--red);box-shadow:0 0 0 2px rgba(139,26,26,.15)}
+.hz-hint{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5;min-height:14px}
+
+/* ── QUIZ ── */
+.qcard{background:var(--paper);border:1px solid var(--bdr);border-radius:16px;padding:1.8rem;text-align:center;box-shadow:var(--shd);margin-bottom:1rem}
+.qq{font-family:'Noto Serif SC',serif;font-size:80px;color:var(--ink);margin-bottom:.4rem;cursor:pointer;line-height:1.1;transition:transform .12s;display:inline-block}
+.qq:hover{transform:scale(1.05)}
+.qpy{font-size:14px;color:var(--red);margin-bottom:.8rem;font-weight:300;letter-spacing:.08em}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:.8rem}
+.qopt{background:white;border:1.5px solid var(--bdr);border-radius:10px;padding:13px 11px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;font-size:13px;transition:all .2s;text-align:center;color:var(--ink)}
+.qopt:hover{border-color:var(--gold);background:rgba(212,168,71,.06)}
+.qopt.ok{border-color:#27ae60;background:#eafaf1;color:#1e8449}
+.qopt.no{border-color:#c0392b;background:#fdedec;color:#c0392b}
+.qfb{text-align:center;font-size:13px;min-height:20px;margin-top:.8rem}
+.quiz-mode-toggle{display:flex;gap:6px;margin-bottom:1rem}
+.qmode{flex:1;padding:8px;background:var(--paper2);border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-size:11px;color:var(--muted);font-family:'Noto Sans SC',sans-serif;text-align:center;transition:all .18s}
+.qmode.on{background:var(--red);color:white;border-color:var(--red);font-weight:500}
+.quiz-score-row{display:flex;justify-content:center;gap:28px;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--bdr)}
+.qscore-item{text-align:center}
+.qscore-num{font-family:'Noto Serif SC',serif;font-size:30px;font-weight:700;line-height:1}
+.qscore-num.c{color:#27ae60}
+.qscore-num.w{color:var(--red)}
+.qscore-lbl{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.08em}
+.qspk-btn{background:var(--red);color:white;border:none;border-radius:20px;padding:7px 18px;font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;margin-top:.8rem;display:inline-flex;align-items:center;gap:6px;transition:background .15s}
+.qspk-btn:hover{background:var(--red2)}
+
+/* ── PHRASES ── */
+.ptabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.2rem}
+.ptab{background:white;border:1px solid var(--bdr);border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;color:var(--muted);transition:all .2s}
+.ptab.on,.ptab:hover{background:var(--red);color:white;border-color:var(--red)}
 .plist{display:flex;flex-direction:column;gap:8px}
 .pcard{background:white;border:1px solid var(--bdr);border-radius:11px;padding:13px 15px;display:flex;align-items:center;gap:14px;transition:all .2s}
 .pcard:hover{box-shadow:var(--shd)}
 .pcn{font-family:'Noto Serif SC',serif;font-size:18px;min-width:120px;color:var(--ink);line-height:1.3;cursor:pointer}
 .pdet{flex:1}
-.ppy{font-size:11px;color:var(--red);margin-bottom:3px}
+.ppy{font-size:11px;color:var(--red);margin-bottom:3px;font-weight:500}
 .pen{font-size:13px;color:var(--ink)}
-/* PROGRESS */
+
+/* ── PROGRESS ── */
 .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
 .scard{background:white;border:1px solid var(--bdr);border-radius:12px;padding:14px;text-align:center}
 .snum{font-family:'Noto Serif SC',serif;font-size:34px;color:var(--red);font-weight:700}
 .slbl{font-size:11px;color:var(--muted);margin-top:3px}
-.stbtn{background:white;border:1.5px solid var(--bdr);border-radius:10px;padding:8px 14px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;font-size:12px;font-weight:500;color:var(--muted);transition:all .2s;text-align:center;line-height:1.6;min-width:80px}
-.stbtn:hover{border-color:var(--red);color:var(--red)}
-.stbtn.on{background:var(--red);color:white;border-color:var(--red)}
-.write-box{margin-top:.9rem;background:rgba(139,26,26,.03);border:1px solid var(--bdr);border-radius:10px;padding:10px 13px;text-align:left}
-.write-box h4{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:.5rem}
-.stroke-steps{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.5rem}
-.stroke-step{background:white;border:1px solid var(--bdr);border-radius:8px;padding:5px 9px;font-family:"Noto Serif SC",serif;font-size:22px;color:var(--ink);position:relative;min-width:38px;text-align:center;line-height:1.3}
-.stroke-step .sn{position:absolute;top:2px;right:3px;font-size:8px;color:var(--muted);font-family:"Noto Sans SC",sans-serif}
-.write-tip{font-size:11px;color:var(--muted);line-height:1.6;margin-top:.4rem}
-.write-order{font-size:12px;color:var(--ink);line-height:1.7;margin-top:.3rem}
+.prog-bar-wrap{margin-bottom:.9rem}
+.prog-bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px}
+.prog-bar-track{background:var(--paper2);height:6px;border-radius:3px;overflow:hidden}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:3px;transition:width .4s}
+
+/* ── TOAST ── */
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(26,16,8,.92);color:white;padding:10px 20px;border-radius:25px;font-size:13px;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none}
 .toast.on{transform:translateX(-50%) translateY(0)}
-@media(max-width:480px){.bc{font-size:72px}.qq{font-size:56px}.mgrid{grid-template-columns:1fr}.qopts{grid-template-columns:1fr}.pcn{min-width:90px;font-size:15px}}
+
+@media(max-width:480px){.qq{font-size:64px}.mgrid{grid-template-columns:1fr}.qopts{grid-template-columns:1fr}.pcn{min-width:90px;font-size:15px}}
 </style>
 </head>
 <body>
+<div id="app">
+
+<!-- HEADER -->
 <header>
-  <div class="hl">
-    <div class="logo">🏮</div>
-    <div class="ht"><h1>Menu Master</h1><p>Chinese Restaurant Guide</p></div>
+  <div class="header-inner">
+    <div class="hl">
+      <div class="logo">🏮</div>
+      <div class="ht"><h1>Menu Master</h1><p>Chinese Restaurant Guide</p></div>
+    </div>
+    <div class="streak">🔥 <span id="sc">0</span> day streak</div>
   </div>
-  <div class="streak">🔥 <span id="sc">0</span> day streak</div>
 </header>
+
+<!-- NAV -->
 <nav>
-  <button class="active" onclick="tab('daily',this)">📅 Daily 5</button>
-  <button onclick="tab('quiz',this)">🧠 Quiz</button>
-  <button onclick="tab('menu',this)">🍜 Menu</button>
-  <button onclick="tab('phrases',this)">💬 Phrases</button>
-  <button onclick="tab('progress',this)">📊 Progress</button>
+  <button class="nav-btn active" onclick="tab('menu',this)">🍜 Menu</button>
+  <button class="nav-btn" onclick="tab('quiz',this)">🧠 Quiz</button>
+  <button class="nav-btn" onclick="tab('phrases',this)">💬 Phrases</button>
+  <button class="nav-btn" onclick="tab('progress',this)">📊 Progress</button>
 </nav>
-<main>
 
-<!-- DAILY -->
-<section id="daily" class="active">
-  <div class="dtop">
-    <h2>今日学习 · Today's Characters</h2>
-    <p id="dlbl"></p>
-    <div class="pbar"><div class="pfill" id="pf" style="width:20%"></div></div>
-    <p style="font-size:11px;color:var(--muted)">Character <span id="cn">1</span> of 5</p>
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- MENU -->
+  <div class="page active" id="page-menu">
+    <div class="sh"><span class="orn">❖</span><h2>Full Menu Reference</h2><span class="orn">❖</span></div>
+    <input class="msrch" id="msrch" placeholder="Search English, Chinese or pinyin…" oninput="rMenu()">
+    <div class="ctabs" id="ctabs"></div>
+    <div class="mcount"><span id="mcount">0</span> items · tap ✍ to animate strokes · tap 🔊 to hear</div>
+    <div class="mgrid" id="mgrid"></div>
   </div>
-  <div class="cc">
-    <div class="cnl">CHARACTER <span id="cnum">01</span></div>
-    <div id="clvl" class="lvb l1">STAGE 1 · SINGLE CHARACTERS</div>
-    <div class="bc" id="bchar" onclick="spkCur()">肉</div>
-    <div class="cp" id="cpiny">ròu</div>
-    <div class="cm" id="cmean">Meat</div>
-    <div class="cs" id="cstk"></div>
-    <div class="ctx" style="display:flex;align-items:center;gap:14px">
-      <div class="cn" id="cex" style="font-size:18px;min-width:80px;cursor:pointer" onclick="spk(daily[ci].ex)"></div>
-      <div style="flex:1">
-        <div style="font-size:11px;color:var(--red);margin-bottom:2px" id="cexpy"></div>
-        <div class="en" id="cexe"></div>
+
+  <!-- QUIZ -->
+  <div class="page" id="page-quiz">
+    <div class="sh"><span class="orn">❖</span><h2>Character Quiz</h2><span class="orn">❖</span></div>
+    <div class="qcard">
+      <div class="quiz-mode-toggle">
+        <button class="qmode on" id="qm-meaning" onclick="setQuizMode('meaning',this)">Chinese → English</button>
+        <button class="qmode" id="qm-reading" onclick="setQuizMode('reading',this)">English → Chinese</button>
+        <button class="qmode" id="qm-listen" onclick="setQuizMode('listen',this)">🔊 Listen &amp; Choose</button>
       </div>
-      <button class="sspk" onclick="spk(daily[ci].ex)" title="Hear example"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>
-    </div>
-    <div class="ctip" id="ctip"></div>
-    <div class="write-box" id="writebox">
-      <h4>How to Write &middot; Stroke Order</h4>
-      <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:.5rem 0">
-        <div id="hz-target" style="width:130px;height:130px;border:1px solid var(--bdr);border-radius:8px;background:white;flex-shrink:0"></div>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button onclick="hzAnimate()" class="nb" style="font-size:12px;padding:8px 14px">&#9654; Animate strokes</button>
-          <button onclick="hzQuiz()" class="nb" style="font-size:12px;padding:8px 14px">&#9998; Practice writing</button>
-          <button onclick="hzShow()" class="nb" style="font-size:12px;padding:8px 14px">&#128065; Show character</button>
-        </div>
+      <div class="qq" id="qch" onclick="spkQuiz()">菜</div>
+      <div class="qpy" id="qpy"></div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:.4rem" id="qprompt">What does this mean?</div>
+      <div class="qopts" id="qopts"></div>
+      <div class="qfb" id="qfb"></div>
+      <div style="text-align:center">
+        <button class="qspk-btn" onclick="spkQuiz()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          Hear pronunciation
+        </button>
       </div>
-      <div id="hz-hint" style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin-top:.3rem">Tap Animate to see the correct stroke order</div>
+      <div class="quiz-score-row">
+        <div class="qscore-item"><div class="qscore-num c" id="qsc">0</div><div class="qscore-lbl">Correct</div></div>
+        <div class="qscore-item" style="display:flex;align-items:center;font-size:20px;color:var(--muted)">/</div>
+        <div class="qscore-item"><div class="qscore-num" style="color:var(--muted)" id="qtot">0</div><div class="qscore-lbl">Total</div></div>
+      </div>
     </div>
-    <button class="spk" onclick="spkCur()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-      Hear Pronunciation
-    </button>
-    <div style="margin-top:8px;font-size:11px;color:var(--muted)">💡 Tap the character to hear it</div>
+    <p style="font-size:11px;color:var(--muted);text-align:center">Tap the character or button to hear pronunciation</p>
   </div>
-  <div class="cnav">
-    <button class="nb" id="pb" onclick="chg(-1)" disabled>← Prev</button>
-    <span style="font-size:12px;color:var(--muted)"><span id="cpos">1</span> / 5</span>
-    <button class="nb" id="fwb" onclick="chg(1)">Next →</button>
+
+  <!-- PHRASES -->
+  <div class="page" id="page-phrases">
+    <div class="sh"><span class="orn">❖</span><h2>Phrases &amp; Conversation</h2><span class="orn">❖</span></div>
+    <div class="ptabs" id="ptabs"></div>
+    <div class="plist" id="plist"></div>
   </div>
-  <div style="margin-top:1.2rem;padding:.9rem;background:rgba(212,168,71,.08);border-radius:12px;border:1px solid rgba(212,168,71,.28)">
-    <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:.7rem">✨ Jump to any stage below — your choice is remembered</p>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-      <button onclick="setStage(1)" id="sb1" class="stbtn on">🟢 Stage 1<br><span style="font-size:10px;font-weight:400">Single characters</span></button>
-      <button onclick="setStage(2)" id="sb2" class="stbtn">🔵 Stage 2<br><span style="font-size:10px;font-weight:400">Two-character words</span></button>
-      <button onclick="setStage(3)" id="sb3" class="stbtn">🔴 Stage 3<br><span style="font-size:10px;font-weight:400">Full dish names</span></button>
-      <button onclick="setStage(0)" id="sb0" class="stbtn">🔄 Auto<br><span style="font-size:10px;font-weight:400">Progress daily</span></button>
+
+  <!-- PROGRESS -->
+  <div class="page" id="page-progress">
+    <div class="sh"><span class="orn">❖</span><h2>Your Progress</h2><span class="orn">❖</span></div>
+    <div class="sgrid">
+      <div class="scard"><div class="snum" id="sd">0</div><div class="slbl">Days Active</div></div>
+      <div class="scard"><div class="snum" id="sstr">0</div><div class="slbl">Day Streak</div></div>
+      <div class="scard"><div class="snum" id="spct">—</div><div class="slbl">Quiz Accuracy</div></div>
+      <div class="scard"><div class="snum" id="sanim">0</div><div class="slbl">Strokes Explored</div></div>
     </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-label"><span>Menu items explored</span><span id="pMenuFrac">0/0</span></div>
+      <div class="prog-bar-track"><div class="prog-bar-fill" id="pMenuBar" style="width:0%"></div></div>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-label"><span>Phrases explored</span><span id="pPhrFrac">0/0</span></div>
+      <div class="prog-bar-track"><div class="prog-bar-fill" id="pPhrBar" style="width:0%"></div></div>
+    </div>
+    <button onclick="resetP()" style="margin-top:1.2rem;background:none;border:1px solid #ccc;border-radius:8px;padding:9px 18px;cursor:pointer;color:var(--muted);font-family:'Noto Sans SC',sans-serif;font-size:12px">Reset Progress</button>
   </div>
-</section>
 
-<!-- QUIZ -->
-<section id="quiz">
-  <div class="sh"><span class="orn">❖</span><h2>Character Quiz</h2><span class="orn">❖</span></div>
-  <div class="qcard">
-    <div style="font-size:12px;color:var(--muted);margin-bottom:6px">What does this mean?</div>
-    <div class="qq" id="qch">菜</div>
-    <div style="font-size:13px;color:var(--red);margin-bottom:6px" id="qpy"></div>
-    <div class="qopts" id="qopts"></div>
-    <div style="margin-top:.9rem;font-size:12px" id="qfb"></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.8rem">
-    <div style="font-size:12px;color:var(--muted)">Score: <strong id="qsc" style="color:var(--red)">0</strong> / <span id="qtot">0</span></div>
-    <button class="nb" onclick="nxtQ()">Next →</button>
-  </div>
-</section>
-
-<!-- MENU -->
-<section id="menu">
-  <div class="sh"><span class="orn">❖</span><h2>Full Menu Reference</h2><span class="orn">❖</span></div>
-  <input class="msrch" id="msrch" placeholder="Search English, Chinese or pinyin…" oninput="rMenu()">
-  <div class="ctabs" id="ctabs"></div>
-  <div style="font-size:11px;color:var(--muted);margin-bottom:.8rem"><span id="mcount">0</span> items</div>
-  <div class="mgrid" id="mgrid"></div>
-</section>
-
-<!-- PHRASES -->
-<section id="phrases">
-  <div class="sh"><span class="orn">❖</span><h2>Phrases &amp; Conversation</h2><span class="orn">❖</span></div>
-  <div class="ptabs" id="ptabs"></div>
-  <div class="plist" id="plist"></div>
-</section>
-
-<!-- PROGRESS -->
-<section id="progress">
-  <div class="sh"><span class="orn">❖</span><h2>Your Progress</h2><span class="orn">❖</span></div>
-  <div class="sgrid">
-    <div class="scard"><div class="snum" id="sd">0</div><div class="slbl">Days Active</div></div>
-    <div class="scard"><div class="snum" id="sch">0</div><div class="slbl">Characters Seen</div></div>
-    <div class="scard"><div class="snum" id="spct">0%</div><div class="slbl">Quiz Accuracy</div></div>
-    <div class="scard"><div class="snum" id="sstr">0</div><div class="slbl">Day Streak</div></div>
-  </div>
-  <div class="sh"><span class="orn">❖</span><h2>Today's Characters</h2></div>
-  <div id="lg" style="display:flex;flex-wrap:wrap;gap:9px"></div>
-  <button onclick="resetP()" style="margin-top:1.8rem;background:none;border:1px solid #ccc;border-radius:8px;padding:9px 18px;cursor:pointer;color:var(--muted);font-family:'Noto Sans SC',sans-serif;font-size:12px">Reset Progress</button>
-</section>
-</main>
+</div><!-- /content -->
+</div><!-- /app -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════════
-// CHARACTER DATABASE
-// ═══════════════════════════════════════════════════════════════
-// CHARACTER DATABASE
-// Stage 1 (lv:1) — single characters, core food & basics
-// Stage 2 (lv:2) — two-character words
-// Stage 3 (lv:3) — multi-character dish names & phrases
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// CHARACTER DATABASE (full — all 3 stages)
+// ═══════════════════════════════════════════════
 const CHARS = [
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // STAGE 1 — SINGLE CHARACTERS
-// Core ingredients, tastes, actions
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{ch:'肉',py:'ròu',en:'Meat',cat:'🥩 Meat & Poultry',desc:'Generic meat — on Chinese menus almost always means pork unless specified',ex:'有肉吗？',expy:'yǒu ròu ma',exe:'Does this have meat?',tip:'猪肉=pork, 牛肉=beef, 鸡肉=chicken.',lv:1},
+{ch:'鱼',py:'yú',en:'Fish',cat:'🦐 Seafood',desc:'Fish — one of the oldest and most important food characters',ex:'清蒸鱼',expy:'qīng zhēng yú',exe:'Steamed fish',tip:'Also means abundance — whole fish at celebrations symbolises prosperity.',lv:1},
+{ch:'虾',py:'xiā',en:'Prawn / Shrimp',cat:'🦐 Seafood',desc:'Shrimp or prawn — stir-fried, steamed or in dumplings',ex:'大虾',expy:'dà xiā',exe:'Large prawns',tip:'虾饺 = prawn dumpling, a dim sum essential.',lv:1},
+{ch:'蟹',py:'xiè',en:'Crab',cat:'🦐 Seafood',desc:'Crab — prized for its sweet flesh',ex:'清蒸蟹',expy:'qīng zhēng xiè',exe:'Steamed crab',tip:'大闸蟹 = Shanghai hairy crab, a prized autumn delicacy.',lv:1},
+{ch:'鸡',py:'jī',en:'Chicken',cat:'🥩 Meat & Poultry',desc:'Chicken — the most versatile meat in Chinese cooking',ex:'白切鸡',expy:'bái qiē jī',exe:'Poached chicken',tip:'鸡肉=meat, 鸡蛋=egg, 鸡腿=drumstick, 鸡翅=wing.',lv:1},
+{ch:'猪',py:'zhū',en:'Pork / Pig',cat:'🥩 Meat & Poultry',desc:'Pig — pork is the cornerstone of Chinese cooking',ex:'猪肉',expy:'zhū ròu',exe:'Pork',tip:'Unless specified, 肉 on a menu usually means 猪肉.',lv:1},
+{ch:'牛',py:'niú',en:'Beef / Cow',cat:'🥩 Meat & Poultry',desc:'Cow — 牛肉 is beef, used in noodle soups and stir-fries',ex:'牛肉面',expy:'niú ròu miàn',exe:'Beef noodle soup',tip:'牛排=steak, 牛腩=brisket, 牛奶=milk.',lv:1},
+{ch:'羊',py:'yáng',en:'Lamb / Mutton',cat:'🥩 Meat & Poultry',desc:'Sheep — popular in northern Chinese and Muslim Chinese cuisine',ex:'烤羊肉',expy:'kǎo yáng ròu',exe:'Roast lamb',tip:'羊肉串 = lamb skewers, a beloved street food.',lv:1},
+{ch:'鸭',py:'yā',en:'Duck',cat:'🥩 Meat & Poultry',desc:'Duck — made world-famous by Peking roast duck',ex:'烤鸭',expy:'kǎo yā',exe:'Roast duck',tip:'Served with thin pancakes, spring onion, cucumber and hoisin sauce.',lv:1},
+{ch:'蛋',py:'dàn',en:'Egg',cat:'🥩 Meat & Poultry',desc:'Egg — appears in dozens of Chinese dishes',ex:'炒蛋',expy:'chǎo dàn',exe:'Scrambled eggs',tip:'鸡蛋=chicken egg, 鸭蛋=duck egg, 皮蛋=century egg.',lv:1},
+{ch:'菜',py:'cài',en:'Vegetable / Dish',cat:'🥬 Vegetables',desc:'Vegetable — also the word for any dish on a menu',ex:'点菜',expy:'diǎn cài',exe:'To order food',tip:'点菜 = to order. 素菜 = vegetarian dish.',lv:1},
+{ch:'米',py:'mǐ',en:'Rice (uncooked)',cat:'🍚 Staples',desc:'Uncooked rice grains — one of the most fundamental characters',ex:'白米',expy:'bái mǐ',exe:'White rice',tip:'米=uncooked. 饭=cooked rice.',lv:1},
+{ch:'面',py:'miàn',en:'Noodles / Flour',cat:'🍚 Staples',desc:'Noodles or any flour-based food',ex:'捞面',expy:'lāo miàn',exe:'Tossed noodles',tip:'面 means both noodles and face — on menus: always noodles!',lv:1},
+{ch:'豆',py:'dòu',en:'Bean',cat:'🥬 Vegetables',desc:'Bean or legume — appears in tofu, soy milk, bean sprouts',ex:'豆腐',expy:'dòu fu',exe:'Tofu',tip:'豆腐=tofu, 豆浆=soy milk, 豆芽=bean sprouts.',lv:1},
+{ch:'葱',py:'cōng',en:'Spring Onion',cat:'🥬 Vegetables',desc:'Spring onion / scallion — garnish on almost everything',ex:'葱花',expy:'cōng huā',exe:'Chopped spring onion',tip:'不要葱 = no spring onion. Very common topping.',lv:1},
+{ch:'蒜',py:'suàn',en:'Garlic',cat:'🥬 Vegetables',desc:'Garlic — the single most important flavour base',ex:'蒜蓉',expy:'suàn róng',exe:'Minced garlic',tip:'蒜蓉 = minced garlic sauce. Appears on almost every menu.',lv:1},
+{ch:'姜',py:'jiāng',en:'Ginger',cat:'🥬 Vegetables',desc:'Fresh ginger — aromatic essential, pairs with seafood',ex:'姜丝',expy:'jiāng sī',exe:'Ginger slivers',tip:'Ginger reduces fishiness — classic pairing.',lv:1},
+{ch:'辣',py:'là',en:'Spicy / Chili-hot',cat:'🌶️ Taste',desc:'Spicy heat — perhaps the most critical word to know',ex:'不辣',expy:'bù là',exe:'Not spicy',tip:'不辣=none · 微辣=mild · 中辣=medium · 大辣=very hot!',lv:1},
+{ch:'甜',py:'tián',en:'Sweet',cat:'🌶️ Taste',desc:'Sweet taste — desserts and sweet-sour sauces',ex:'甜品',expy:'tián pǐn',exe:'Desserts',tip:'甜品 = desserts (Cantonese). 甜点 = desserts (Mandarin).',lv:1},
+{ch:'酸',py:'suān',en:'Sour / Tangy',cat:'🌶️ Taste',desc:'Sour, vinegary — used in many classic sauces',ex:'酸辣',expy:'suān là',exe:'Sour and spicy',tip:'镇江香醋 = prized Chinese black vinegar.',lv:1},
+{ch:'咸',py:'xián',en:'Salty',cat:'🌶️ Taste',desc:'Salty — important to know if you need to request less',ex:'太咸了',expy:'tài xián le',exe:'Too salty!',tip:'Say \"少盐\" (less salt) when ordering.',lv:1},
+{ch:'香',py:'xiāng',en:'Fragrant / Aromatic',cat:'🌶️ Taste',desc:'Fragrant, aromatic — a hugely positive descriptor',ex:'香气扑鼻',expy:'xiāng qì pū bí',exe:'Wonderful aroma',tip:'香菇=shiitake, 香肠=sausage, 香茅=lemongrass.',lv:1},
+{ch:'鲜',py:'xiān',en:'Fresh / Umami',cat:'🌶️ Taste',desc:'Fresh and umami — one of the most prized taste qualities',ex:'鲜美',expy:'xiān měi',exe:'Deliciously fresh',tip:'鲜 is the prized fifth taste in Chinese cooking.',lv:1},
+{ch:'炒',py:'chǎo',en:'Stir-fry',cat:'🍳 Cooking',desc:'High-heat wok stir-frying — the most common Chinese cooking method',ex:'炒菜',expy:'chǎo cài',exe:'Stir-fried dish',tip:'Fire radical on the left. Everything over blazing flame, fast.',lv:1},
+{ch:'蒸',py:'zhēng',en:'Steamed',cat:'🍳 Cooking',desc:'Steaming — healthy and preserves natural flavour',ex:'蒸鱼',expy:'zhēng yú',exe:'Steamed fish',tip:'清蒸 = lightly steamed with minimal seasoning.',lv:1},
+{ch:'烤',py:'kǎo',en:'Roasted / Grilled',cat:'🍳 Cooking',desc:'Oven-roasted or grilled over open flame',ex:'烤鸭',expy:'kǎo yā',exe:'Roast duck',tip:'烧烤 = BBQ specifically.',lv:1},
+{ch:'炸',py:'zhá',en:'Deep-fried',cat:'🍳 Cooking',desc:'Submerged in hot oil — produces a crispy golden result',ex:'炸鸡',expy:'zhá jī',exe:'Fried chicken',tip:'油炸 = oil-fried. Look for 炸 to spot deep-fried items.',lv:1},
+{ch:'煎',py:'jiān',en:'Pan-fried',cat:'🍳 Cooking',desc:'Shallow pan-frying — crispy exterior, moist inside',ex:'煎鱼',expy:'jiān yú',exe:'Pan-fried fish',tip:'煎饺 = potstickers. Different from 炸 (fully submerged).',lv:1},
+{ch:'汤',py:'tāng',en:'Soup / Broth',cat:'🍲 Soups',desc:'Soup — an essential part of every Chinese meal',ex:'喝汤',expy:'hē tāng',exe:'Drink the soup',tip:'Chinese say 喝汤 (drink soup) not 吃汤 (eat soup)!',lv:1},
+{ch:'茶',py:'chá',en:'Tea',cat:'🍵 Drinks',desc:'Tea — central to Chinese culture for over 5,000 years',ex:'一壶茶',expy:'yī hú chá',exe:'A pot of tea',tip:'In Cantonese restaurants tea comes automatically. 饮茶 = yum cha.',lv:1},
 
-// Proteins & seafood
-{ch:'肉',py:'ròu',en:'Meat',cat:'🥩 Meat & Poultry',desc:'Generic meat — on Chinese menus almost always means pork unless specified',ex:'有肉吗？',expy:'yǒu ròu ma',exe:'Does this have meat?',tip:'猪肉=pork, 牛肉=beef, 鸡肉=chicken. Just 肉 on its own usually means pork.',stk:'6 strokes',lv:1},
-{ch:'鱼',py:'yú',en:'Fish',cat:'🦐 Seafood',desc:'Fish — one of the oldest and most important food characters',ex:'清蒸鱼',expy:'qīng zhēng yú',exe:'Steamed fish',tip:'Also means abundance — whole fish at celebrations symbolises prosperity.',stk:'8 strokes',lv:1},
-{ch:'虾',py:'xiā',en:'Prawn / Shrimp',cat:'🦐 Seafood',desc:'Shrimp or prawn — stir-fried, steamed or in dumplings',ex:'大虾',expy:'dà xiā',exe:'Large prawns',tip:'虾饺 = prawn dumpling, a dim sum essential. 虾仁 = prawn meat.',stk:'9 strokes',lv:1},
-{ch:'蟹',py:'xiè',en:'Crab',cat:'🦐 Seafood',desc:'Crab — prized for its sweet flesh',ex:'清蒸蟹',expy:'qīng zhēng xiè',exe:'Steamed crab',tip:'大闸蟹 = Shanghai hairy crab, a prized autumn delicacy.',stk:'19 strokes',lv:1},
-{ch:'鸡',py:'jī',en:'Chicken',cat:'🥩 Meat & Poultry',desc:'Chicken — the most versatile meat in Chinese cooking',ex:'白切鸡',expy:'bái qiē jī',exe:'Poached chicken',tip:'鸡肉=meat, 鸡蛋=egg, 鸡腿=drumstick, 鸡翅=wing.',stk:'7 strokes',lv:1},
-{ch:'猪',py:'zhū',en:'Pork / Pig',cat:'🥩 Meat & Poultry',desc:'Pig — pork is the cornerstone of Chinese cooking',ex:'猪肉',expy:'zhū ròu',exe:'Pork',tip:'Unless specified, 肉 on a menu usually means 猪肉.',stk:'11 strokes',lv:1},
-{ch:'牛',py:'niú',en:'Beef / Cow',cat:'🥩 Meat & Poultry',desc:'Cow — 牛肉 is beef, used in noodle soups and stir-fries',ex:'牛肉面',expy:'niú ròu miàn',exe:'Beef noodle soup',tip:'牛排=steak, 牛腩=brisket, 牛奶=milk.',stk:'4 strokes',lv:1},
-{ch:'羊',py:'yáng',en:'Lamb / Mutton',cat:'🥩 Meat & Poultry',desc:'Sheep — popular in northern Chinese and Muslim Chinese cuisine',ex:'烤羊肉',expy:'kǎo yáng ròu',exe:'Roast lamb',tip:'羊肉串 = lamb skewers, a beloved street food.',stk:'6 strokes',lv:1},
-{ch:'鸭',py:'yā',en:'Duck',cat:'🥩 Meat & Poultry',desc:'Duck — made world-famous by Peking roast duck',ex:'烤鸭',expy:'kǎo yā',exe:'Roast duck',tip:'Served with thin pancakes, spring onion, cucumber and hoisin sauce.',stk:'10 strokes',lv:1},
-{ch:'蛋',py:'dàn',en:'Egg',cat:'🥩 Meat & Poultry',desc:'Egg — appears in dozens of Chinese dishes',ex:'炒蛋',expy:'chǎo dàn',exe:'Scrambled eggs',tip:'鸡蛋=chicken egg, 鸭蛋=duck egg, 皮蛋=century egg.',stk:'11 strokes',lv:1},
-
-// Vegetables & plant
-{ch:'菜',py:'cài',en:'Vegetable / Dish',cat:'🥬 Vegetables',desc:'Vegetable — also the word for any "dish" on a menu',ex:'点菜',expy:'diǎn cài',exe:'To order food',tip:'点菜 = to order. 素菜 = vegetarian dish. 时菜 = seasonal veg.',stk:'11 strokes',lv:1},
-{ch:'米',py:'mǐ',en:'Rice (uncooked)',cat:'🍚 Staples',desc:'Uncooked rice grains — one of the most fundamental characters',ex:'白米',expy:'bái mǐ',exe:'White rice',tip:'米=uncooked. 饭=cooked. Learn both! 炒米=fried rice base.',stk:'6 strokes',lv:1},
-{ch:'面',py:'miàn',en:'Noodles / Flour',cat:'🍚 Staples',desc:'Noodles or any flour-based food',ex:'捞面',expy:'lāo miàn',exe:'Tossed noodles',tip:'面 means both noodles and face. On menus: always noodles!',stk:'9 strokes',lv:1},
-{ch:'豆',py:'dòu',en:'Bean',cat:'🥬 Vegetables',desc:'Bean or legume — appears in tofu, soy milk, bean sprouts',ex:'豆腐',expy:'dòu fu',exe:'Tofu',tip:'豆腐=tofu, 豆浆=soy milk, 豆芽=bean sprouts, 豆瓣=bean paste.',stk:'7 strokes',lv:1},
-{ch:'葱',py:'cōng',en:'Spring Onion',cat:'🥬 Vegetables',desc:'Spring onion / scallion — garnish on almost everything',ex:'葱花',expy:'cōng huā',exe:'Chopped spring onion',tip:'不要葱 = no spring onion. Very common topping you may want to skip.',stk:'11 strokes',lv:1},
-{ch:'蒜',py:'suàn',en:'Garlic',cat:'🥬 Vegetables',desc:'Garlic — the single most important flavour base',ex:'蒜蓉',expy:'suàn róng',exe:'Minced garlic',tip:'蒜蓉 = minced garlic sauce. Appears on almost every Chinese menu.',stk:'12 strokes',lv:1},
-{ch:'姜',py:'jiāng',en:'Ginger',cat:'🥬 Vegetables',desc:'Fresh ginger — aromatic essential, pairs with seafood',ex:'姜丝',expy:'jiāng sī',exe:'Ginger slivers',tip:'姜减少鱼腥味 — ginger reduces fishiness. Classic pairing.',stk:'9 strokes',lv:1},
-{ch:'辣',py:'là',en:'Spicy / Chili-hot',cat:'🌶️ Taste',desc:'Spicy heat — perhaps the most critical word to know',ex:'不辣',expy:'bù là',exe:'Not spicy',tip:'不辣=none · 微辣=mild · 中辣=medium · 大辣/特辣=very hot!',stk:'14 strokes',lv:1},
-{ch:'甜',py:'tián',en:'Sweet',cat:'🌶️ Taste',desc:'Sweet taste — desserts and sweet-sour sauces',ex:'甜品',expy:'tián pǐn',exe:'Desserts',tip:'甜品 = desserts (Cantonese). 甜点 = desserts (Mandarin).',stk:'11 strokes',lv:1},
-{ch:'酸',py:'suān',en:'Sour / Tangy',cat:'🌶️ Taste',desc:'Sour, vinegary — used in many classic sauces',ex:'酸辣',expy:'suān là',exe:'Sour and spicy',tip:'镇江香醋 = prized Chinese black vinegar, key in Shanghainese food.',stk:'14 strokes',lv:1},
-{ch:'咸',py:'xián',en:'Salty',cat:'🌶️ Taste',desc:'Salty — important to know if you need to request less',ex:'太咸了',expy:'tài xián le',exe:'Too salty!',tip:'Say "少盐" (less salt) or "少咸" when ordering.',stk:'9 strokes',lv:1},
-{ch:'香',py:'xiāng',en:'Fragrant / Aromatic',cat:'🌶️ Taste',desc:'Fragrant, aromatic — a hugely positive descriptor',ex:'香气扑鼻',expy:'xiāng qì pū bí',exe:'Wonderful aroma',tip:'香菇=shiitake mushroom, 香肠=sausage, 香茅=lemongrass.',stk:'9 strokes',lv:1},
-{ch:'鲜',py:'xiān',en:'Fresh / Umami',cat:'🌶️ Taste',desc:'Fresh and umami — one of the most prized taste qualities',ex:'鲜美',expy:'xiān měi',exe:'Deliciously fresh',tip:'鲜 is the prized fifth taste concept in Chinese cooking.',stk:'17 strokes',lv:1},
-
-// Cooking verbs
-{ch:'炒',py:'chǎo',en:'Stir-fry',cat:'🍳 Cooking',desc:'High-heat wok stir-frying — the most common Chinese cooking method',ex:'炒菜',expy:'chǎo cài',exe:'Stir-fried dish',tip:'Fire radical on the left. Everything over blazing flame, fast.',stk:'8 strokes',lv:1},
-{ch:'蒸',py:'zhēng',en:'Steamed',cat:'🍳 Cooking',desc:'Steaming — healthy and preserves natural flavour',ex:'蒸鱼',expy:'zhēng yú',exe:'Steamed fish',tip:'清蒸 = lightly steamed with minimal seasoning. The healthiest option.',stk:'13 strokes',lv:1},
-{ch:'烤',py:'kǎo',en:'Roasted / Grilled',cat:'🍳 Cooking',desc:'Oven-roasted or grilled over open flame',ex:'烤鸭',expy:'kǎo yā',exe:'Roast duck',tip:'烧烤 = BBQ specifically. 烤 can mean oven or grill.',stk:'10 strokes',lv:1},
-{ch:'炸',py:'zhá',en:'Deep-fried',cat:'🍳 Cooking',desc:'Submerged in hot oil — produces a crispy golden result',ex:'炸鸡',expy:'zhá jī',exe:'Fried chicken',tip:'油炸 = oil-fried. Look for 炸 to spot deep-fried items.',stk:'9 strokes',lv:1},
-{ch:'煎',py:'jiān',en:'Pan-fried',cat:'🍳 Cooking',desc:'Shallow pan-frying — crispy exterior, moist inside',ex:'煎鱼',expy:'jiān yú',exe:'Pan-fried fish',tip:'煎饺 = potstickers. Different from 炸 which is fully submerged.',stk:'9 strokes',lv:1},
-{ch:'汤',py:'tāng',en:'Soup / Broth',cat:'🍲 Soups',desc:'Soup — an essential part of every Chinese meal',ex:'喝汤',expy:'hē tāng',exe:'Drink the soup',tip:'Chinese say 喝汤 (drink soup) not 吃汤 (eat soup)!',stk:'6 strokes',lv:1},
-{ch:'茶',py:'chá',en:'Tea',cat:'🍵 Drinks',desc:'Tea — central to Chinese culture for over 5,000 years',ex:'一壶茶',expy:'yī hú chá',exe:'A pot of tea',tip:'In Cantonese restaurants tea comes automatically. 饮茶 = yum cha.',stk:'9 strokes',lv:1},
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // STAGE 2 — TWO-CHARACTER WORDS
-// Ingredients, dishes, descriptors
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{ch:'豆腐',py:'dòu fu',en:'Tofu / Bean Curd',cat:'🥬 Vegetables',desc:'Bean curd — silken, firm, fried or fermented varieties',ex:'麻婆豆腐',expy:'má pó dòu fu',exe:'Mapo tofu',tip:'麻婆豆腐 is one of the world\'s most famous dishes.',lv:2},
+{ch:'排骨',py:'pái gǔ',en:'Pork Ribs',cat:'🥩 Meat & Poultry',desc:'Pork spare ribs — steamed, braised or BBQ',ex:'蒸排骨',expy:'zhēng pái gǔ',exe:'Steamed spare ribs',tip:'无锡排骨 = sweet soy braised ribs from Wuxi.',lv:2},
+{ch:'叉烧',py:'chā shāo',en:'Char Siu / BBQ Pork',cat:'🥩 Meat & Poultry',desc:'Cantonese honey-glazed BBQ pork — sweet, sticky, smoky red',ex:'叉烧饭',expy:'chā shāo fàn',exe:'Char siu rice',tip:'The quintessential Cantonese BBQ pork.',lv:2},
+{ch:'白菜',py:'bái cài',en:'Napa Cabbage',cat:'🥬 Vegetables',desc:'Chinese napa cabbage — most common vegetable in Chinese cooking',ex:'炒白菜',expy:'chǎo bái cài',exe:'Stir-fried cabbage',tip:'Essential in dumplings, hotpot and stir-fries.',lv:2},
+{ch:'空心菜',py:'kōng xīn cài',en:'Water Spinach / Kangkung',cat:'🥬 Vegetables',desc:'Hollow-stemmed leafy green — hugely popular in Malaysian Chinese cooking',ex:'炒空心菜',expy:'chǎo kōng xīn cài',exe:'Stir-fried water spinach',tip:'通菜 in Cantonese. A must-order at Malaysian Chinese restaurants.',lv:2},
+{ch:'芥兰',py:'jiè lán',en:'Gai Lan / Chinese Broccoli',cat:'🥬 Vegetables',desc:'Dark leafy green with thick crunchy stems',ex:'蚝油芥兰',expy:'háo yóu jiè lán',exe:'Oyster sauce gai lan',tip:'蚝油芥兰 is a Cantonese classic. Always order as a side.',lv:2},
+{ch:'茄子',py:'qié zi',en:'Eggplant / Aubergine',cat:'🥬 Vegetables',desc:'Eggplant — braised, steamed, stuffed or deep-fried',ex:'鱼香茄子',expy:'yú xiāng qié zi',exe:'Fish-fragrant eggplant',tip:'鱼香 = \"fish-fragrant\" sauce — ironically contains no fish!',lv:2},
+{ch:'香菇',py:'xiāng gū',en:'Shiitake Mushroom',cat:'🥬 Vegetables',desc:'Fragrant mushroom — earthy, deeply umami',ex:'香菇鸡汤',expy:'xiāng gū jī tāng',exe:'Shiitake chicken soup',tip:'Dried shiitake has more intense flavour than fresh.',lv:2},
+{ch:'木耳',py:'mù ěr',en:'Wood Ear Fungus',cat:'🥬 Vegetables',desc:'Black fungus — crunchy and earthy',ex:'凉拌木耳',expy:'liáng bàn mù ěr',exe:'Cold dressed wood ear',tip:'木耳 = \"wood ear\" — it actually grows on trees!',lv:2},
+{ch:'豆芽',py:'dòu yá',en:'Bean Sprouts',cat:'🥬 Vegetables',desc:'Crisp bean sprouts — stir-fried or in noodle dishes',ex:'炒豆芽',expy:'chǎo dòu yá',exe:'Stir-fried bean sprouts',tip:'黄豆芽=soybean (thick), 绿豆芽=mung bean (thin).',lv:2},
+{ch:'辣椒',py:'là jiāo',en:'Chili Pepper',cat:'🥬 Vegetables',desc:'Fresh or dried chili — the heat source in Chinese cooking',ex:'干辣椒',expy:'gān là jiāo',exe:'Dried chili',tip:'干辣椒=dried, 鲜辣椒=fresh, 小米辣=bird\'s eye (very hot).',lv:2},
+{ch:'鱿鱼',py:'yóu yú',en:'Squid',cat:'🦐 Seafood',desc:'Squid — stir-fried, grilled on iron plate, or in hotpot',ex:'铁板鱿鱼',expy:'tiě bǎn yóu yú',exe:'Sizzling squid on iron plate',tip:'Also Cantonese slang for being fired from a job!',lv:2},
+{ch:'扇贝',py:'shàn bèi',en:'Scallop',cat:'🦐 Seafood',desc:'Scallops — often served with garlic and glass noodles on shell',ex:'蒜蓉扇贝',expy:'suàn róng shàn bèi',exe:'Garlic scallops',tip:'Served on the shell — a visual showstopper.',lv:2},
+{ch:'生蚝',py:'shēng háo',en:'Fresh Oyster',cat:'🦐 Seafood',desc:'Fresh oyster — raw, grilled or with garlic and vermicelli',ex:'蒜蓉生蚝',expy:'suàn róng shēng háo',exe:'Garlic oysters',tip:'蚝油 (oyster sauce) = one of the most important Cantonese condiments.',lv:2},
+{ch:'白饭',py:'bái fàn',en:'Steamed White Rice',cat:'🍚 Staples',desc:'Plain steamed rice — the foundation of every Chinese meal',ex:'来一碗白饭',expy:'lái yī wǎn bái fàn',exe:'One bowl of white rice please',tip:'Always ask for 白饭 if you want plain rice.',lv:2},
+{ch:'炒饭',py:'chǎo fàn',en:'Fried Rice',cat:'🍚 Staples',desc:'Wok-fried rice with egg, vegetables and soy sauce',ex:'扬州炒饭',expy:'yáng zhōu chǎo fàn',exe:'Yangzhou fried rice',tip:'扬州炒饭 is the classic. 蛋炒饭 = simple egg fried rice.',lv:2},
+{ch:'河粉',py:'hé fěn',en:'Flat Rice Noodles (Hofun)',cat:'🍚 Staples',desc:'Wide, silky flat rice noodles from Guangdong',ex:'干炒牛河',expy:'gān chǎo niú hé',exe:'Dry-fried beef hofun',tip:'干炒牛河 = the ultimate Cantonese wok dish.',lv:2},
+{ch:'米粉',py:'mǐ fěn',en:'Rice Vermicelli',cat:'🍚 Staples',desc:'Thin rice noodles — common in soups and stir-fries',ex:'炒米粉',expy:'chǎo mǐ fěn',exe:'Stir-fried rice vermicelli',tip:'Thinner than 河粉. Absorbs soup flavour beautifully.',lv:2},
+{ch:'红烧',py:'hóng shāo',en:'Red-braised',cat:'🍳 Cooking',desc:'Braised in soy sauce, sugar, Shaoxing wine and star anise',ex:'红烧肉',expy:'hóng shāo ròu',exe:'Red-braised pork belly',tip:'红=red from soy sauce. Deep mahogany colour and rich flavour.',lv:2},
+{ch:'清蒸',py:'qīng zhēng',en:'Lightly Steamed',cat:'🍳 Cooking',desc:'Steamed with minimal seasoning — purest expression of fresh ingredients',ex:'清蒸鱼',expy:'qīng zhēng yú',exe:'Lightly steamed fish',tip:'The Cantonese way to cook fresh fish.',lv:2},
+{ch:'酸辣',py:'suān là',en:'Sour & Spicy',cat:'🌶️ Taste',desc:'The classic flavour pairing — vinegar tang with chili heat',ex:'酸辣汤',expy:'suān là tāng',exe:'Hot and sour soup',tip:'One of the most iconic Chinese flavour combinations.',lv:2},
+{ch:'麻辣',py:'má là',en:'Numbing & Spicy',cat:'🌶️ Taste',desc:'The Sichuan signature — numbing peppercorn + chili heat',ex:'麻辣火锅',expy:'má là huǒ guō',exe:'Sichuan spicy hotpot',tip:'麻=numbing (Sichuan pepper), 辣=spicy. Wildly addictive!',lv:2},
+{ch:'蚝油',py:'háo yóu',en:'Oyster Sauce',cat:'🌶️ Taste',desc:'Thick, savoury-sweet sauce made from oyster extracts',ex:'蚝油芥兰',expy:'háo yóu jiè lán',exe:'Oyster sauce gai lan',tip:'One of Cantonese cooking\'s most essential condiments.',lv:2},
+{ch:'火锅',py:'huǒ guō',en:'Hotpot',cat:'🍲 Soups',desc:'Communal boiling pot — cook-it-yourself at the table',ex:'吃火锅',expy:'chī huǒ guō',exe:'Eat hotpot',tip:'清汤=clear, 红汤=spicy, 鸳鸯=half-half.',lv:2},
+{ch:'粥',py:'zhōu',en:'Congee / Rice Porridge',cat:'🍲 Soups',desc:'Slow-cooked rice porridge — comforting and nutritious',ex:'皮蛋粥',expy:'pí dàn zhōu',exe:'Century egg congee',tip:'白粥=plain. 皮蛋瘦肉粥 is the most popular variety.',lv:2},
+{ch:'点心',py:'diǎn xīn',en:'Dim Sum',cat:'🥟 Dim Sum',desc:'Small bite-sized dishes served with tea',ex:'吃点心',expy:'chī diǎn xīn',exe:'Eat dim sum',tip:'点心 = \"touch the heart.\" 饮茶 in Cantonese = yum cha.',lv:2},
+{ch:'虾饺',py:'xiā jiǎo',en:'Har Gow (Prawn Dumpling)',cat:'🥟 Dim Sum',desc:'Translucent steamed prawn dumplings — the test of a dim sum chef',ex:'一笼虾饺',expy:'yī lóng xiā jiǎo',exe:'A basket of har gow',tip:'A skilled chef folds exactly 7 pleats on each piece.',lv:2},
+{ch:'烧卖',py:'shāo mài',en:'Siu Mai',cat:'🥟 Dim Sum',desc:'Open-topped pork and shrimp dumplings',ex:'猪肉烧卖',expy:'zhū ròu shāo mài',exe:'Pork siu mai',tip:'Usually topped with orange flying fish roe or a green pea.',lv:2},
+{ch:'肠粉',py:'cháng fěn',en:'Cheung Fun (Rice Noodle Roll)',cat:'🥟 Dim Sum',desc:'Silky steamed rice noodle rolls with various fillings',ex:'虾仁肠粉',expy:'xiā rén cháng fěn',exe:'Prawn cheung fun',tip:'Dressed with sweet soy sauce and sesame.',lv:2},
+{ch:'凤爪',py:'fèng zhuǎ',en:'Chicken Feet',cat:'🥟 Dim Sum',desc:'Braised and steamed chicken feet',ex:'豉汁凤爪',expy:'chǐ zhī fèng zhuǎ',exe:'Black bean chicken feet',tip:'凤爪 = \"phoenix claws.\" Braised until gelatinous.',lv:2},
+{ch:'蛋挞',py:'dàn tǎ',en:'Egg Tart',cat:'🥟 Dim Sum',desc:'Buttery pastry shell with silky egg custard filling',ex:'港式蛋挞',expy:'gǎng shì dàn tǎ',exe:'Hong Kong egg tart',tip:'Order early — always sells out! Best eaten warm.',lv:2},
+{ch:'萝卜糕',py:'luó bo gāo',en:'Turnip Cake (Lo Bak Go)',cat:'🥟 Dim Sum',desc:'Pan-fried radish and rice flour cake — crispy outside, soft inside',ex:'煎萝卜糕',expy:'jiān luó bo gāo',exe:'Pan-fried turnip cake',tip:'Made with radish despite \"turnip\" in the English name.',lv:2},
+{ch:'甜品',py:'tián pǐn',en:'Dessert (Cantonese)',cat:'🍮 Desserts',desc:'The Cantonese word for sweet desserts and snacks',ex:'有什么甜品？',expy:'yǒu shén me tián pǐn',exe:'What desserts do you have?',tip:'Dedicated 甜品 shops are a staple of Malaysian Cantonese culture.',lv:2},
+{ch:'汤圆',py:'tāng yuán',en:'Glutinous Rice Balls',cat:'🍮 Desserts',desc:'Sweet sticky rice balls in warm syrup — symbol of family reunion',ex:'芝麻汤圆',expy:'zhī ma tāng yuán',exe:'Black sesame rice balls',tip:'Eaten at Lantern Festival. 汤圆 sounds like \"reunion.\"',lv:2},
+{ch:'绿茶',py:'lǜ chá',en:'Green Tea',cat:'🍵 Drinks',desc:'Unoxidised tea — light, grassy, slightly astringent',ex:'龙井茶',expy:'lóng jǐng chá',exe:'Dragon Well green tea',tip:'龙井 (Longjing) from Hangzhou = China\'s most famous green tea.',lv:2},
+{ch:'啤酒',py:'pí jiǔ',en:'Beer',cat:'🍵 Drinks',desc:'Beer — very popular with Chinese food',ex:'干杯！',expy:'gān bēi',exe:'Cheers!',tip:'青岛 (Tsingtao) is China\'s most famous brand. 干杯 = bottoms up!',lv:2},
 
-{ch:'豆腐',py:'dòu fu',en:'Tofu / Bean Curd',cat:'🥬 Vegetables',desc:'Bean curd — silken, firm, fried or fermented varieties',ex:'麻婆豆腐',expy:'má pó dòu fu',exe:'Mapo tofu',tip:'豆=bean, 腐=fermented. 麻婆豆腐 is one of the world\'s most famous dishes.',stk:'Combined',lv:2},
-{ch:'排骨',py:'pái gǔ',en:'Pork Ribs',cat:'🥩 Meat & Poultry',desc:'Pork spare ribs — steamed, braised or BBQ',ex:'蒸排骨',expy:'zhēng pái gǔ',exe:'Steamed spare ribs',tip:'无锡排骨 = sweet soy braised ribs from Wuxi, a classic.',stk:'Combined',lv:2},
-{ch:'叉烧',py:'chā shāo',en:'Char Siu / BBQ Pork',cat:'🥩 Meat & Poultry',desc:'Cantonese honey-glazed BBQ pork — sweet, sticky, smoky red',ex:'叉烧饭',expy:'chā shāo fàn',exe:'Char siu rice',tip:'The quintessential Cantonese BBQ pork. The red colour is iconic.',stk:'Combined',lv:2},
-{ch:'白菜',py:'bái cài',en:'Napa Cabbage',cat:'🥬 Vegetables',desc:'Chinese napa cabbage — most common vegetable in Chinese cooking',ex:'炒白菜',expy:'chǎo bái cài',exe:'Stir-fried cabbage',tip:'白 = white. Essential in dumplings, hotpot and stir-fries.',stk:'Combined',lv:2},
-{ch:'空心菜',py:'kōng xīn cài',en:'Water Spinach / Kangkung',cat:'🥬 Vegetables',desc:'Hollow-stemmed leafy green — hugely popular in Malaysian Chinese cooking',ex:'炒空心菜',expy:'chǎo kōng xīn cài',exe:'Stir-fried water spinach',tip:'通菜 in Cantonese. A must-order at Malaysian Chinese restaurants.',stk:'Combined',lv:2},
-{ch:'芥兰',py:'jiè lán',en:'Gai Lan / Chinese Broccoli',cat:'🥬 Vegetables',desc:'Dark leafy green with thick crunchy stems',ex:'蚝油芥兰',expy:'háo yóu jiè lán',exe:'Oyster sauce gai lan',tip:'蚝油芥兰 is a Cantonese classic. Always order as a vegetable side.',stk:'Combined',lv:2},
-{ch:'茄子',py:'qié zi',en:'Eggplant / Aubergine',cat:'🥬 Vegetables',desc:'Eggplant — braised, steamed, stuffed or deep-fried',ex:'鱼香茄子',expy:'yú xiāng qié zi',exe:'Fish-fragrant eggplant',tip:'鱼香 = "fish-fragrant" sauce style — ironically contains no fish!',stk:'Combined',lv:2},
-{ch:'香菇',py:'xiāng gū',en:'Shiitake Mushroom',cat:'🥬 Vegetables',desc:'Fragrant mushroom — earthy, deeply umami',ex:'香菇鸡汤',expy:'xiāng gū jī tāng',exe:'Shiitake chicken soup',tip:'Dried shiitake has more intense flavour than fresh.',stk:'Combined',lv:2},
-{ch:'木耳',py:'mù ěr',en:'Wood Ear Fungus',cat:'🥬 Vegetables',desc:'Black fungus — crunchy and earthy',ex:'凉拌木耳',expy:'liáng bàn mù ěr',exe:'Cold dressed wood ear',tip:'木耳 = "wood ear" — it actually grows on trees and looks like one!',stk:'Combined',lv:2},
-{ch:'豆芽',py:'dòu yá',en:'Bean Sprouts',cat:'🥬 Vegetables',desc:'Crisp bean sprouts — stir-fried or in noodle dishes',ex:'炒豆芽',expy:'chǎo dòu yá',exe:'Stir-fried bean sprouts',tip:'黄豆芽=soybean (thick), 绿豆芽=mung bean (thin). Both tasty.',stk:'Combined',lv:2},
-{ch:'莲藕',py:'lián ǒu',en:'Lotus Root',cat:'🥬 Vegetables',desc:'Crunchy lotus root with distinctive hole pattern',ex:'糖醋莲藕',expy:'táng cù lián ǒu',exe:'Sweet & sour lotus root',tip:'The slice reveals a beautiful pattern of holes. Very photogenic!',stk:'Combined',lv:2},
-{ch:'冬瓜',py:'dōng guā',en:'Winter Melon',cat:'🥬 Vegetables',desc:'Mild white melon used mainly in soups',ex:'冬瓜汤',expy:'dōng guā tāng',exe:'Winter melon soup',tip:'Harvested in summer despite "winter" in its name.',stk:'Combined',lv:2},
-{ch:'辣椒',py:'là jiāo',en:'Chili Pepper',cat:'🥬 Vegetables',desc:'Fresh or dried chili — the heat source in Chinese cooking',ex:'干辣椒',expy:'gān là jiāo',exe:'Dried chili',tip:'干辣椒=dried, 鲜辣椒=fresh, 小米辣=bird\'s eye chili (very hot).',stk:'Combined',lv:2},
-{ch:'鱿鱼',py:'yóu yú',en:'Squid',cat:'🦐 Seafood',desc:'Squid — stir-fried, grilled on iron plate, or in hotpot',ex:'铁板鱿鱼',expy:'tiě bǎn yóu yú',exe:'Sizzling squid on iron plate',tip:'Also Cantonese slang for being fired from a job!',stk:'Combined',lv:2},
-{ch:'扇贝',py:'shàn bèi',en:'Scallop',cat:'🦐 Seafood',desc:'Scallops — often served with garlic and glass noodles on shell',ex:'蒜蓉扇贝',expy:'suàn róng shàn bèi',exe:'Garlic scallops',tip:'Served on the shell — a visual showstopper at any table.',stk:'Combined',lv:2},
-{ch:'生蚝',py:'shēng háo',en:'Fresh Oyster',cat:'🦐 Seafood',desc:'Fresh oyster — raw, grilled or with garlic and vermicelli',ex:'蒜蓉生蚝',expy:'suàn róng shēng háo',exe:'Garlic oysters',tip:'蚝油 (oyster sauce) = one of the most important Cantonese condiments.',stk:'Combined',lv:2},
-{ch:'海参',py:'hǎi shēn',en:'Sea Cucumber',cat:'🦐 Seafood',desc:'Luxury gelatinous ingredient — prized for health and status',ex:'红烧海参',expy:'hóng shāo hǎi shēn',exe:'Braised sea cucumber',tip:'No flavour itself — absorbs sauce. Expensive and prestigious.',stk:'Combined',lv:2},
-{ch:'白饭',py:'bái fàn',en:'Steamed White Rice',cat:'🍚 Staples',desc:'Plain steamed rice — the foundation of every Chinese meal',ex:'来一碗白饭',expy:'lái yī wǎn bái fàn',exe:'One bowl of white rice please',tip:'Always ask for 白饭 if you want plain rice alongside your dishes.',stk:'Combined',lv:2},
-{ch:'炒饭',py:'chǎo fàn',en:'Fried Rice',cat:'🍚 Staples',desc:'Wok-fried rice with egg, vegetables and soy sauce',ex:'扬州炒饭',expy:'yáng zhōu chǎo fàn',exe:'Yangzhou fried rice',tip:'扬州炒饭 is the classic. 蛋炒饭 = simple egg fried rice.',stk:'Combined',lv:2},
-{ch:'河粉',py:'hé fěn',en:'Flat Rice Noodles (Hofun)',cat:'🍚 Staples',desc:'Wide, silky flat rice noodles from Guangdong',ex:'干炒牛河',expy:'gān chǎo niú hé',exe:'Dry-fried beef hofun',tip:'干炒牛河 = the ultimate Cantonese wok dish. Test of a chef\'s skill.',stk:'Combined',lv:2},
-{ch:'米粉',py:'mǐ fěn',en:'Rice Vermicelli',cat:'🍚 Staples',desc:'Thin rice noodles — common in soups and stir-fries',ex:'炒米粉',expy:'chǎo mǐ fěn',exe:'Stir-fried rice vermicelli',tip:'Thinner than 河粉. Absorbs soup flavour beautifully.',stk:'Combined',lv:2},
-{ch:'馒头',py:'mán tou',en:'Plain Steamed Bun',cat:'🍚 Staples',desc:'Fluffy unfilled steamed white bread',ex:'一个馒头',expy:'yī gè mán tou',exe:'One steamed bun',tip:'No filling — unlike 包子. Northern Chinese staple, also served in Malaysian restaurants.',stk:'Combined',lv:2},
-{ch:'红烧',py:'hóng shāo',en:'Red-braised',cat:'🍳 Cooking',desc:'Braised in soy sauce, sugar, Shaoxing wine and star anise',ex:'红烧肉',expy:'hóng shāo ròu',exe:'Red-braised pork belly',tip:'红=red from soy sauce. Gives a deep mahogany colour and rich flavour.',stk:'Combined',lv:2},
-{ch:'清蒸',py:'qīng zhēng',en:'Lightly Steamed',cat:'🍳 Cooking',desc:'Steamed with minimal seasoning — purest expression of fresh ingredients',ex:'清蒸鱼',expy:'qīng zhēng yú',exe:'Lightly steamed fish',tip:'The Cantonese way to cook fresh fish. Just soy, ginger, and hot oil.',stk:'Combined',lv:2},
-{ch:'白灼',py:'bái zhuó',en:'Blanched',cat:'🍳 Cooking',desc:'Quickly blanched in boiling water then dressed with soy',ex:'白灼虾',expy:'bái zhuó xiā',exe:'Blanched prawns',tip:'A Cantonese technique — keeps ingredients fresh and clean-tasting.',stk:'Combined',lv:2},
-{ch:'凉拌',py:'liáng bàn',en:'Cold-dressed',cat:'🍳 Cooking',desc:'Cold salad-style dish tossed with soy, vinegar and sesame',ex:'凉拌黄瓜',expy:'liáng bàn huáng guā',exe:'Cold dressed cucumber',tip:'凉=cold, 拌=toss. A refreshing appetiser.',stk:'Combined',lv:2},
-{ch:'酸辣',py:'suān là',en:'Sour & Spicy',cat:'🌶️ Taste',desc:'The classic flavour pairing — vinegar tang with chili heat',ex:'酸辣汤',expy:'suān là tāng',exe:'Hot and sour soup',tip:'One of the most iconic Chinese flavour combinations.',stk:'Combined',lv:2},
-{ch:'麻辣',py:'má là',en:'Numbing & Spicy',cat:'🌶️ Taste',desc:'The Sichuan signature — numbing peppercorn + chili heat',ex:'麻辣火锅',expy:'má là huǒ guō',exe:'Sichuan spicy hotpot',tip:'麻=numbing (Sichuan pepper), 辣=spicy (chili). Wildly addictive!',stk:'Combined',lv:2},
-{ch:'甜酸',py:'tián suān',en:'Sweet & Sour',cat:'🌶️ Taste',desc:'The sweet-sour balance beloved in Cantonese cuisine',ex:'甜酸猪肉',expy:'tián suān zhū ròu',exe:'Sweet and sour pork',tip:'Known in English as "sweet and sour." 糖醋 is another way to say it.',stk:'Combined',lv:2},
-{ch:'蚝油',py:'háo yóu',en:'Oyster Sauce',cat:'🌶️ Taste',desc:'Thick, savoury-sweet sauce made from oyster extracts',ex:'蚝油芥兰',expy:'háo yóu jiè lán',exe:'Oyster sauce gai lan',tip:'One of Cantonese cooking\'s most essential condiments.',stk:'Combined',lv:2},
-{ch:'酱油',py:'jiàng yóu',en:'Soy Sauce',cat:'🌶️ Taste',desc:'Soy sauce — the foundation condiment of Chinese cooking',ex:'生抽/老抽',expy:'shēng chōu / lǎo chōu',exe:'Light soy / Dark soy',tip:'生抽=light soy (saltier), 老抽=dark soy (colour, less salty).',stk:'Combined',lv:2},
-{ch:'火锅',py:'huǒ guō',en:'Hotpot',cat:'🍲 Soups',desc:'Communal boiling pot — cook-it-yourself at the table',ex:'吃火锅',expy:'chī huǒ guō',exe:'Eat hotpot',tip:'清汤=clear, 红汤=spicy, 鸳鸯=half-half. A social feast.',stk:'Combined',lv:2},
-{ch:'粥',py:'zhōu',en:'Congee / Rice Porridge',cat:'🍲 Soups',desc:'Slow-cooked rice porridge — comforting and nutritious',ex:'皮蛋粥',expy:'pí dàn zhōu',exe:'Century egg congee',tip:'白粥=plain. 皮蛋瘦肉粥 (century egg & pork) is the most popular.',stk:'Combined',lv:2},
-{ch:'绿茶',py:'lǜ chá',en:'Green Tea',cat:'🍵 Drinks',desc:'Unoxidised tea — light, grassy, slightly astringent',ex:'龙井茶',expy:'lóng jǐng chá',exe:'Dragon Well green tea',tip:'龙井 (Longjing) from Hangzhou = China\'s most famous green tea.',stk:'Combined',lv:2},
-{ch:'啤酒',py:'pí jiǔ',en:'Beer',cat:'🍵 Drinks',desc:'Beer — very popular with Chinese food',ex:'干杯！',expy:'gān bēi',exe:'Cheers!',tip:'青岛 (Tsingtao) is China\'s most famous brand. 干杯 = bottoms up!',stk:'Combined',lv:2},
-{ch:'椰汁',py:'yē zhī',en:'Coconut Juice',cat:'🍵 Drinks',desc:'Fresh coconut water or coconut milk drink',ex:'新鲜椰汁',expy:'xīn xiān yē zhī',exe:'Fresh coconut juice',tip:'Very popular in Malaysian Chinese restaurants.',stk:'Combined',lv:2},
-{ch:'豆浆',py:'dòu jiāng',en:'Soy Milk',cat:'🍵 Drinks',desc:'Traditional hot or cold soy milk drink',ex:'热豆浆',expy:'rè dòu jiāng',exe:'Hot soy milk',tip:'甜豆浆=sweet, 咸豆浆=savoury (Shanghai style with vinegar, chili oil).',stk:'Combined',lv:2},
-{ch:'点心',py:'diǎn xīn',en:'Dim Sum',cat:'🥟 Dim Sum',desc:'Small bite-sized dishes served with tea',ex:'吃点心',expy:'chī diǎn xīn',exe:'Eat dim sum',tip:'点心 = "touch the heart." 饮茶 in Cantonese = yum cha.',stk:'Combined',lv:2},
-{ch:'虾饺',py:'xiā jiǎo',en:'Har Gow (Prawn Dumpling)',cat:'🥟 Dim Sum',desc:'Translucent steamed prawn dumplings — the test of a dim sum chef',ex:'一笼虾饺',expy:'yī lóng xiā jiǎo',exe:'A basket of har gow',tip:'A skilled chef folds exactly 7 pleats on each piece.',stk:'Combined',lv:2},
-{ch:'烧卖',py:'shāo mài',en:'Siu Mai',cat:'🥟 Dim Sum',desc:'Open-topped pork and shrimp dumplings',ex:'猪肉烧卖',expy:'zhū ròu shāo mài',exe:'Pork siu mai',tip:'Usually topped with orange flying fish roe or a green pea.',stk:'Combined',lv:2},
-{ch:'肠粉',py:'cháng fěn',en:'Cheung Fun (Rice Noodle Roll)',cat:'🥟 Dim Sum',desc:'Silky steamed rice noodle rolls with various fillings',ex:'虾仁肠粉',expy:'xiā rén cháng fěn',exe:'Prawn cheung fun',tip:'The slipperiest dim sum. Dressed with sweet soy sauce and sesame.',stk:'Combined',lv:2},
-{ch:'凤爪',py:'fèng zhuǎ',en:'Chicken Feet',cat:'🥟 Dim Sum',desc:'Braised and steamed chicken feet',ex:'豉汁凤爪',expy:'chǐ zhī fèng zhuǎ',exe:'Black bean chicken feet',tip:'凤爪 = "phoenix claws." Braised until gelatinous. Acquired taste!',stk:'Combined',lv:2},
-{ch:'蛋挞',py:'dàn tǎ',en:'Egg Tart',cat:'🥟 Dim Sum',desc:'Buttery pastry shell with silky egg custard filling',ex:'港式蛋挞',expy:'gǎng shì dàn tǎ',exe:'Hong Kong egg tart',tip:'Order early — always sells out! Best eaten warm.',stk:'Combined',lv:2},
-{ch:'萝卜糕',py:'luó bo gāo',en:'Turnip Cake (Lo Bak Go)',cat:'🥟 Dim Sum',desc:'Pan-fried radish and rice flour cake — crispy outside, soft inside',ex:'煎萝卜糕',expy:'jiān luó bo gāo',exe:'Pan-fried turnip cake',tip:'Made with radish despite "turnip" in the English name.',stk:'Combined',lv:2},
-{ch:'甜品',py:'tián pǐn',en:'Dessert (Cantonese)',cat:'🍮 Desserts',desc:'The Cantonese word for sweet desserts and snacks',ex:'有什么甜品？',expy:'yǒu shén me tián pǐn',exe:'What desserts do you have?',tip:'Dedicated 甜品 shops are a staple of Malaysian Cantonese culture.',stk:'Combined',lv:2},
-{ch:'汤圆',py:'tāng yuán',en:'Glutinous Rice Balls',cat:'🍮 Desserts',desc:'Sweet sticky rice balls in warm syrup — symbol of family reunion',ex:'芝麻汤圆',expy:'zhī ma tāng yuán',exe:'Black sesame rice balls',tip:'Eaten at Lantern Festival. 汤圆 sounds like "reunion" — very auspicious.',stk:'Combined',lv:2},
-{ch:'糖水',py:'táng shuǐ',en:'Sweet Dessert Soup',cat:'🍮 Desserts',desc:'Cantonese dessert soups — warm or cold, dozens of varieties',ex:'芝麻糊',expy:'zhī ma hú',exe:'Black sesame sweet soup',tip:'粤式糖水 shops everywhere in Malaysia. 豆腐花=tofu pudding, 绿豆汤=mung bean.',stk:'Combined',lv:2},
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STAGE 3 — MULTI-CHARACTER DISH NAMES
-// Full dish names you\'ll see on menus
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-{ch:'北京烤鸭',py:'běi jīng kǎo yā',en:'Peking Roast Duck',cat:'🥩 Meat & Poultry',desc:'Crispy-skinned whole roasted duck — China\'s most iconic dish',ex:'一份北京烤鸭',expy:'yī fèn běi jīng kǎo yā',exe:'One Peking duck please',tip:'Served with thin pancakes, spring onion, cucumber, hoisin. Ceremonial carving.',stk:'Multi-char',lv:3},
-{ch:'宫保鸡丁',py:'gōng bǎo jī dīng',en:'Kung Pao Chicken',cat:'🥩 Meat & Poultry',desc:'Stir-fried chicken with peanuts, dried chili and Sichuan pepper',ex:'一份宫保鸡丁',expy:'yī fèn gōng bǎo jī dīng',exe:'A serving of Kung Pao chicken',tip:'Named after a Qing dynasty official. One of the most ordered Chinese dishes worldwide.',stk:'Multi-char',lv:3},
-{ch:'麻婆豆腐',py:'má pó dòu fu',en:'Mapo Tofu',cat:'🥬 Vegetables',desc:'Silken tofu in spicy Sichuan bean paste with chili oil and numbing pepper',ex:'一份麻婆豆腐',expy:'yī fèn má pó dòu fu',exe:'One mapo tofu please',tip:'麻婆 = "pockmarked old woman" — named after its inventor in Chengdu.',stk:'Multi-char',lv:3},
-{ch:'东坡肉',py:'dōng pō ròu',en:'Dongpo Pork',cat:'🥩 Meat & Poultry',desc:'Melt-in-mouth braised pork belly — named after poet Su Dongpo',ex:'一份东坡肉',expy:'yī fèn dōng pō ròu',exe:'Dongpo pork',tip:'Invented by poet-statesman Su Dongpo during the Song dynasty.',stk:'Multi-char',lv:3},
-{ch:'红烧肉',py:'hóng shāo ròu',en:'Red-braised Pork Belly',cat:'🥩 Meat & Poultry',desc:'Pork belly slow-braised in soy, sugar, Shaoxing wine — rich mahogany colour',ex:'来一份红烧肉',expy:'lái yī fèn hóng shāo ròu',exe:'One red-braised pork please',tip:'Chairman Mao\'s favourite dish. Also called 东坡肉 in Zhejiang style.',stk:'Multi-char',lv:3},
-{ch:'白切鸡',py:'bái qiē jī',en:'Poached Chicken (White Cut)',cat:'🥩 Meat & Poultry',desc:'Whole chicken poached just below boiling — silky and tender',ex:'一只白切鸡',expy:'yī zhī bái qiē jī',exe:'One poached chicken',tip:'The Cantonese test of chicken quality. Served with ginger-scallion sauce.',stk:'Multi-char',lv:3},
-{ch:'叉烧饭',py:'chā shāo fàn',en:'Char Siu Rice',cat:'🥩 Meat & Poultry',desc:'BBQ pork over steamed white rice with soy sauce',ex:'来一份叉烧饭',expy:'lái yī fèn chā shāo fàn',exe:'One char siu rice',tip:'A Cantonese roast rice shop classic. Often includes 烧鸭 (roast duck) too.',stk:'Multi-char',lv:3},
-{ch:'姜葱炒蟹',py:'jiāng cōng chǎo xiè',en:'Ginger & Spring Onion Crab',cat:'🦐 Seafood',desc:'Wok-fried whole crab with ginger, spring onion and oyster sauce',ex:'来一份姜葱炒蟹',expy:'lái yī fèn jiāng cōng chǎo xiè',exe:'One ginger crab please',tip:'One of the best ways to eat crab in a Chinese restaurant.',stk:'Multi-char',lv:3},
-{ch:'蒜蓉蒸虾',py:'suàn róng zhēng xiā',en:'Steamed Prawns with Garlic',cat:'🦐 Seafood',desc:'Fresh prawns steamed atop a bed of garlic and vermicelli',ex:'来一份蒜蓉蒸虾',expy:'lái yī fèn suàn róng zhēng xiā',exe:'Garlic steamed prawns',tip:'One of the most popular prawn dishes at Malaysian seafood restaurants.',stk:'Multi-char',lv:3},
-{ch:'清蒸石斑鱼',py:'qīng zhēng shí bān yú',en:'Steamed Grouper',cat:'🦐 Seafood',desc:'Whole grouper steamed with ginger, soy sauce and hot oil',ex:'来一条清蒸石斑',expy:'lái yī tiáo qīng zhēng shí bān',exe:'One steamed grouper',tip:'石斑 (grouper) is one of the most valued fish in Cantonese cooking.',stk:'Multi-char',lv:3},
-{ch:'酸菜鱼',py:'suān cài yú',en:'Sichuan Pickled Fish',cat:'🦐 Seafood',desc:'Fish fillets poached in tangy pickled mustard greens and spicy broth',ex:'一份酸菜鱼',expy:'yī fèn suān cài yú',exe:'Pickled fish please',tip:'One of China\'s fastest growing trending dishes. The broth is addictive.',stk:'Multi-char',lv:3},
-{ch:'干炒牛河',py:'gān chǎo niú hé',en:'Dry-fried Beef Hofun',cat:'🍚 Staples',desc:'Flat rice noodles wok-fried with beef, bean sprouts and soy sauce — dry style',ex:'一份干炒牛河',expy:'yī fèn gān chǎo niú hé',exe:'One dry beef hofun',tip:'The ultimate test of a Cantonese wok chef. The char (wok hei) makes it.',stk:'Multi-char',lv:3},
-{ch:'扬州炒饭',py:'yáng zhōu chǎo fàn',en:'Yangzhou Fried Rice',cat:'🍚 Staples',desc:'Classic fried rice with egg, shrimp, BBQ pork, and vegetables',ex:'一份扬州炒饭',expy:'yī fèn yáng zhōu chǎo fàn',exe:'One Yangzhou fried rice',tip:'The most famous fried rice in China. A Huaiyang cuisine classic.',stk:'Multi-char',lv:3},
-{ch:'西红柿炒蛋',py:'xī hóng shì chǎo dàn',en:'Tomato & Egg Stir-fry',cat:'🥬 Vegetables',desc:'Tomatoes stir-fried with scrambled eggs — beloved home comfort dish',ex:'来一份番茄炒蛋',expy:'lái yī pán fān qié chǎo dàn',exe:'One tomato egg please',tip:'Called the "national dish" of China. Every family has their own recipe.',stk:'Multi-char',lv:3},
-{ch:'鱼香茄子',py:'yú xiāng qié zi',en:'Fish-fragrant Eggplant',cat:'🥬 Vegetables',desc:'Eggplant in a rich Sichuan sauce of garlic, ginger, chili and vinegar',ex:'一份鱼香茄子',expy:'yī fèn yú xiāng qié zi',exe:'One fish-fragrant eggplant',tip:'Despite the name — no fish! 鱼香 is a Sichuan sauce style.',stk:'Multi-char',lv:3},
-{ch:'蚝油芥兰',py:'háo yóu jiè lán',en:'Oyster Sauce Gai Lan',cat:'🥬 Vegetables',desc:'Blanched Chinese broccoli dressed with oyster sauce and sesame oil',ex:'来一份蚝油芥兰',expy:'lái yī fèn háo yóu jiè lán',exe:'One oyster sauce gai lan',tip:'A Cantonese staple side dish. Order this at every meal.',stk:'Multi-char',lv:3},
-{ch:'酸辣汤',py:'suān là tāng',en:'Hot & Sour Soup',cat:'🍲 Soups',desc:'Tangy spicy soup with tofu, mushrooms, bamboo shoots and egg ribbons',ex:'来一碗酸辣汤',expy:'lái yī wǎn suān là tāng',exe:'One hot and sour soup',tip:'Pour beaten egg slowly while stirring for beautiful egg ribbons.',stk:'Multi-char',lv:3},
-{ch:'皮蛋瘦肉粥',py:'pí dàn shòu ròu zhōu',en:'Century Egg & Pork Congee',cat:'🍲 Soups',desc:'Smooth rice porridge with century egg and minced pork',ex:'来一碗皮蛋粥',expy:'lái yī wǎn pí dàn zhōu',exe:'One century egg congee',tip:'The most popular congee at Cantonese restaurants. Comforting and filling.',stk:'Multi-char',lv:3},
-{ch:'叉烧包',py:'chā shāo bāo',en:'Char Siu Bao (BBQ Pork Bun)',cat:'🥟 Dim Sum',desc:'Fluffy steamed or baked buns filled with sweet BBQ pork',ex:'一笼叉烧包',expy:'yī lóng chā shāo bāo',exe:'A basket of char siu bao',tip:'蒸=steamed (white, fluffy). 焗=baked (golden, shiny top). Both beloved.',stk:'Multi-char',lv:3},
-{ch:'芒果布丁',py:'máng guǒ bù dīng',en:'Mango Pudding',cat:'🍮 Desserts',desc:'Creamy chilled mango pudding — a Hong Kong dim sum classic',ex:'来两个芒果布丁',expy:'lái liǎng gè máng guǒ bù dīng',exe:'Two mango puddings please',tip:'Best served chilled with a drizzle of evaporated milk.',stk:'Multi-char',lv:3},
-{ch:'杨枝甘露',py:'yáng zhī gān lù',en:'Mango Sago Pomelo',cat:'🍮 Desserts',desc:'Chilled mango purée with sago pearls and fresh pomelo — a Hong Kong classic',ex:'一杯杨枝甘露',expy:'yī bēi yáng zhī gān lù',exe:'One mango sago please',tip:'A Hong Kong dessert shop signature. 杨枝甘露 = "sweet dew of willow branch."',stk:'Multi-char',lv:3},
-{ch:'佛跳墙',py:'fó tiào qiáng',en:'Buddha Jumps Over the Wall',cat:'🦐 Seafood',desc:'A luxurious Fujianese stew of dozens of premium ingredients — abalone, sea cucumber, shark fin',ex:'一份佛跳墙',expy:'yī fèn fó tiào qiáng',exe:'One Buddha stew please',tip:'So fragrant that Buddha would break his vegetarian vow — hence the name!',stk:'Multi-char',lv:3},
-{ch:'麻辣火锅',py:'má là huǒ guō',en:'Sichuan Spicy Hotpot',cat:'🍲 Soups',desc:'Fiery broth loaded with Sichuan peppercorn and chili — cook-it-yourself feast',ex:'来一锅麻辣火锅',expy:'lái yī guō má là huǒ guō',exe:'One Sichuan hotpot please',tip:'Order the 鸳鸯 (half-half) if you want one spicy half and one clear half.',stk:'Multi-char',lv:3},
+// STAGE 3 — FULL DISH NAMES
+{ch:'北京烤鸭',py:'běi jīng kǎo yā',en:'Peking Roast Duck',cat:'🥩 Meat & Poultry',desc:'Crispy-skinned whole roasted duck — China\'s most iconic dish',ex:'一份北京烤鸭',expy:'yī fèn běi jīng kǎo yā',exe:'One Peking duck please',tip:'Served with thin pancakes, spring onion, cucumber, hoisin.',lv:3},
+{ch:'宫保鸡丁',py:'gōng bǎo jī dīng',en:'Kung Pao Chicken',cat:'🥩 Meat & Poultry',desc:'Stir-fried chicken with peanuts, dried chili and Sichuan pepper',ex:'一份宫保鸡丁',expy:'yī fèn gōng bǎo jī dīng',exe:'A serving of Kung Pao chicken',tip:'Named after a Qing dynasty official. One of the world\'s most ordered Chinese dishes.',lv:3},
+{ch:'麻婆豆腐',py:'má pó dòu fu',en:'Mapo Tofu',cat:'🥬 Vegetables',desc:'Silken tofu in spicy Sichuan bean paste with chili oil and numbing pepper',ex:'一份麻婆豆腐',expy:'yī fèn má pó dòu fu',exe:'One mapo tofu please',tip:'麻婆 = \"pockmarked old woman\" — named after its inventor in Chengdu.',lv:3},
+{ch:'红烧肉',py:'hóng shāo ròu',en:'Red-braised Pork Belly',cat:'🥩 Meat & Poultry',desc:'Pork belly slow-braised in soy, sugar, Shaoxing wine — rich mahogany colour',ex:'来一份红烧肉',expy:'lái yī fèn hóng shāo ròu',exe:'One red-braised pork please',tip:'Chairman Mao\'s favourite dish.',lv:3},
+{ch:'白切鸡',py:'bái qiē jī',en:'Poached Chicken (White Cut)',cat:'🥩 Meat & Poultry',desc:'Whole chicken poached just below boiling — silky and tender',ex:'一只白切鸡',expy:'yī zhī bái qiē jī',exe:'One poached chicken',tip:'The Cantonese test of chicken quality. Served with ginger-scallion sauce.',lv:3},
+{ch:'叉烧饭',py:'chā shāo fàn',en:'Char Siu Rice',cat:'🥩 Meat & Poultry',desc:'BBQ pork over steamed white rice with soy sauce',ex:'来一份叉烧饭',expy:'lái yī fèn chā shāo fàn',exe:'One char siu rice',tip:'A Cantonese roast rice shop classic.',lv:3},
+{ch:'姜葱炒蟹',py:'jiāng cōng chǎo xiè',en:'Ginger & Spring Onion Crab',cat:'🦐 Seafood',desc:'Wok-fried whole crab with ginger, spring onion and oyster sauce',ex:'来一份姜葱炒蟹',expy:'lái yī fèn jiāng cōng chǎo xiè',exe:'One ginger crab please',tip:'One of the best ways to eat crab in a Chinese restaurant.',lv:3},
+{ch:'蒜蓉蒸虾',py:'suàn róng zhēng xiā',en:'Steamed Prawns with Garlic',cat:'🦐 Seafood',desc:'Fresh prawns steamed atop a bed of garlic and vermicelli',ex:'来一份蒜蓉蒸虾',expy:'lái yī fèn suàn róng zhēng xiā',exe:'Garlic steamed prawns',tip:'One of the most popular prawn dishes at Malaysian seafood restaurants.',lv:3},
+{ch:'清蒸石斑鱼',py:'qīng zhēng shí bān yú',en:'Steamed Grouper',cat:'🦐 Seafood',desc:'Whole grouper steamed with ginger, soy sauce and hot oil',ex:'来一条清蒸石斑',expy:'lái yī tiáo qīng zhēng shí bān',exe:'One steamed grouper',tip:'石斑 (grouper) is one of the most valued fish in Cantonese cooking.',lv:3},
+{ch:'干炒牛河',py:'gān chǎo niú hé',en:'Dry-fried Beef Hofun',cat:'🍚 Staples',desc:'Flat rice noodles wok-fried with beef, bean sprouts and soy sauce',ex:'一份干炒牛河',expy:'yī fèn gān chǎo niú hé',exe:'One dry beef hofun',tip:'The ultimate test of a Cantonese wok chef.',lv:3},
+{ch:'扬州炒饭',py:'yáng zhōu chǎo fàn',en:'Yangzhou Fried Rice',cat:'🍚 Staples',desc:'Classic fried rice with egg, shrimp, BBQ pork, and vegetables',ex:'一份扬州炒饭',expy:'yī fèn yáng zhōu chǎo fàn',exe:'One Yangzhou fried rice',tip:'The most famous fried rice in China.',lv:3},
+{ch:'西红柿炒蛋',py:'xī hóng shì chǎo dàn',en:'Tomato & Egg Stir-fry',cat:'🥬 Vegetables',desc:'Tomatoes stir-fried with scrambled eggs — beloved home comfort dish',ex:'来一份番茄炒蛋',expy:'lái yī pán fān qié chǎo dàn',exe:'One tomato egg please',tip:'Called the \"national dish\" of China. Every family has their own recipe.',lv:3},
+{ch:'鱼香茄子',py:'yú xiāng qié zi',en:'Fish-fragrant Eggplant',cat:'🥬 Vegetables',desc:'Eggplant in a rich Sichuan sauce of garlic, ginger, chili and vinegar',ex:'一份鱼香茄子',expy:'yī fèn yú xiāng qié zi',exe:'One fish-fragrant eggplant',tip:'Despite the name — no fish! 鱼香 is a Sichuan sauce style.',lv:3},
+{ch:'蚝油芥兰',py:'háo yóu jiè lán',en:'Oyster Sauce Gai Lan',cat:'🥬 Vegetables',desc:'Blanched Chinese broccoli dressed with oyster sauce and sesame oil',ex:'来一份蚝油芥兰',expy:'lái yī fèn háo yóu jiè lán',exe:'One oyster sauce gai lan',tip:'A Cantonese staple side dish. Order this at every meal.',lv:3},
+{ch:'酸辣汤',py:'suān là tāng',en:'Hot & Sour Soup',cat:'🍲 Soups',desc:'Tangy spicy soup with tofu, mushrooms, bamboo shoots and egg ribbons',ex:'来一碗酸辣汤',expy:'lái yī wǎn suān là tāng',exe:'One hot and sour soup',tip:'Pour beaten egg slowly while stirring for beautiful egg ribbons.',lv:3},
+{ch:'皮蛋瘦肉粥',py:'pí dàn shòu ròu zhōu',en:'Century Egg & Pork Congee',cat:'🍲 Soups',desc:'Smooth rice porridge with century egg and minced pork',ex:'来一碗皮蛋粥',expy:'lái yī wǎn pí dàn zhōu',exe:'One century egg congee',tip:'The most popular congee at Cantonese restaurants.',lv:3},
+{ch:'叉烧包',py:'chā shāo bāo',en:'Char Siu Bao (BBQ Pork Bun)',cat:'🥟 Dim Sum',desc:'Fluffy steamed or baked buns filled with sweet BBQ pork',ex:'一笼叉烧包',expy:'yī lóng chā shāo bāo',exe:'A basket of char siu bao',tip:'蒸=steamed (white, fluffy). 焗=baked (golden, shiny top).',lv:3},
+{ch:'芒果布丁',py:'máng guǒ bù dīng',en:'Mango Pudding',cat:'🍮 Desserts',desc:'Creamy chilled mango pudding — a Hong Kong dim sum classic',ex:'来两个芒果布丁',expy:'lái liǎng gè máng guǒ bù dīng',exe:'Two mango puddings please',tip:'Best served chilled with a drizzle of evaporated milk.',lv:3},
+{ch:'杨枝甘露',py:'yáng zhī gān lù',en:'Mango Sago Pomelo',cat:'🍮 Desserts',desc:'Chilled mango purée with sago pearls and fresh pomelo',ex:'一杯杨枝甘露',expy:'yī bēi yáng zhī gān lù',exe:'One mango sago please',tip:'A Hong Kong dessert shop signature.',lv:3},
+{ch:'麻辣火锅',py:'má là huǒ guō',en:'Sichuan Spicy Hotpot',cat:'🍲 Soups',desc:'Fiery broth loaded with Sichuan peppercorn and chili — cook-it-yourself feast',ex:'来一锅麻辣火锅',expy:'lái yī guō má là huǒ guō',exe:'One Sichuan hotpot please',tip:'Order the 鸳鸯 (half-half) if you want one spicy half and one clear half.',lv:3},
 ];
 
 // ═══════════════════════════════════════════════
-// PHRASES
+// PHRASES (original, preserved in full)
 // ═══════════════════════════════════════════════
 const PHRASES = {
 '👋 Greetings':[
   {cn:'你好',py:'nǐ hǎo',en:'Hello / Hi'},
   {cn:'你好吗？',py:'nǐ hǎo ma',en:'How are you?'},
-  {cn:'我很好，谢谢',py:'wǒ hěn hǎo, xiè xie',en:'I\'m fine, thank you'},
   {cn:'早上好',py:'zǎo shàng hǎo',en:'Good morning'},
   {cn:'晚上好',py:'wǎn shàng hǎo',en:'Good evening'},
   {cn:'再见',py:'zài jiàn',en:'Goodbye'},
@@ -423,33 +356,28 @@ const PHRASES = {
   {cn:'请说慢一点',py:'qǐng shuō màn yī diǎn',en:'Please speak more slowly'},
 ],
 '🪑 Arriving & Seating':[
-  {cn:'几位？',py:'jǐ wèi',en:'How many people? (staff asks you)'},
+  {cn:'几位？',py:'jǐ wèi',en:'How many people? (staff asks)'},
   {cn:'两位',py:'liǎng wèi',en:'Two people'},
   {cn:'四个人',py:'sì gè rén',en:'Four people'},
   {cn:'我订了位',py:'wǒ dìng le wèi',en:'I have a reservation'},
   {cn:'我没有订位',py:'wǒ méi yǒu dìng wèi',en:'I don\'t have a reservation'},
-  {cn:'还有位子吗？',py:'hái yǒu wèi zi ma',en:'Do you have a table available?'},
+  {cn:'还有位子吗？',py:'hái yǒu wèi zi ma',en:'Do you have a table?'},
   {cn:'可以坐这里吗？',py:'kě yǐ zuò zhè lǐ ma',en:'Can we sit here?'},
-  {cn:'可以换一张桌子吗？',py:'kě yǐ huàn yī zhāng zhuō zi ma',en:'Can we change tables?'},
   {cn:'要等多久？',py:'yào děng duō jiǔ',en:'How long is the wait?'},
-  {cn:'有包厢吗？',py:'yǒu bāo xiāng ma',en:'Do you have a private dining room?'},
-  {cn:'靠窗的位子',py:'kào chuāng de wèi zi',en:'A table by the window please'},
-  {cn:'请给我菜单',py:'qǐng gěi wǒ cài dān',en:'Please give me the menu'},
+  {cn:'靠窗的位子',py:'kào chuāng de wèi zi',en:'A table by the window'},
+  {cn:'请给我菜单',py:'qǐng gěi wǒ cài dān',en:'The menu please'},
 ],
 '📋 Ordering Food':[
   {cn:'我要点菜',py:'wǒ yào diǎn cài',en:'I would like to order'},
-  {cn:'服务员！',py:'fú wù yuán',en:'Waiter! / Excuse me! (to call staff)'},
+  {cn:'服务员！',py:'fú wù yuán',en:'Waiter! (to call staff)'},
   {cn:'推荐什么？',py:'tuī jiàn shén me',en:'What do you recommend?'},
   {cn:'招牌菜是什么？',py:'zhāo pái cài shì shén me',en:'What is your signature dish?'},
   {cn:'今天有什么特别？',py:'jīn tiān yǒu shén me tè bié',en:'What\'s today\'s special?'},
   {cn:'来一份这个',py:'lái yī fèn zhè ge',en:'One serving of this please'},
   {cn:'再来一份',py:'zài lái yī fèn',en:'One more serving please'},
-  {cn:'这个怎么做的？',py:'zhè ge zěn me zuò de',en:'How is this dish cooked?'},
-  {cn:'有什么汤？',py:'yǒu shén me tāng',en:'What soups do you have?'},
   {cn:'有什么甜点？',py:'yǒu shén me tián diǎn',en:'What desserts do you have?'},
-  {cn:'打包',py:'dǎ bāo',en:'Take away / Doggy bag please'},
+  {cn:'打包',py:'dǎ bāo',en:'Take away / Doggy bag'},
   {cn:'这不是我点的',py:'zhè bù shì wǒ diǎn de',en:'This isn\'t what I ordered'},
-  {cn:'我还没准备好',py:'wǒ hái méi zhǔn bèi hǎo',en:'I\'m not ready to order yet'},
   {cn:'好吃！',py:'hǎo chī',en:'Delicious!'},
   {cn:'非常好吃',py:'fēi cháng hǎo chī',en:'Extremely delicious!'},
 ],
@@ -461,142 +389,86 @@ const PHRASES = {
   {cn:'我不吃肉',py:'wǒ bù chī ròu',en:'I don\'t eat meat'},
   {cn:'我不吃猪肉',py:'wǒ bù chī zhū ròu',en:'I don\'t eat pork'},
   {cn:'我不吃海鲜',py:'wǒ bù chī hǎi xiān',en:'I don\'t eat seafood'},
-  {cn:'不要鱼露',py:'bù yào yú lù',en:'No fish sauce please'},
   {cn:'我对花生过敏',py:'wǒ duì huā shēng guò mǐn',en:'I am allergic to peanuts'},
-  {cn:'我对海鲜过敏',py:'wǒ duì hǎi xiān guò mǐn',en:'I am allergic to seafood'},
   {cn:'不要味精',py:'bù yào wèi jīng',en:'No MSG please'},
   {cn:'不要葱',py:'bù yào cōng',en:'No spring onion please'},
-  {cn:'不要香菜',py:'bù yào xiāng cài',en:'No coriander / cilantro please'},
+  {cn:'不要香菜',py:'bù yào xiāng cài',en:'No coriander please'},
   {cn:'少盐',py:'shǎo yán',en:'Less salt please'},
   {cn:'少油',py:'shǎo yóu',en:'Less oil please'},
-  {cn:'有清真食品吗？',py:'yǒu qīng zhēn shí pǐn ma',en:'Do you have halal food?'},
 ],
-'🚻 Facilities & Requests':[
-  {cn:'洗手间在哪里？',py:'xǐ shǒu jiān zài nǎ lǐ',en:'Where is the toilet / bathroom?'},
-  {cn:'厕所在哪？',py:'cè suǒ zài nǎ',en:'Where\'s the toilet? (casual)'},
-  {cn:'请给我筷子',py:'qǐng gěi wǒ kuài zi',en:'Please give me chopsticks'},
-  {cn:'请给我叉子',py:'qǐng gěi wǒ chā zi',en:'Please give me a fork'},
-  {cn:'请给我勺子',py:'qǐng gěi wǒ sháo zi',en:'Please give me a spoon'},
-  {cn:'请给我餐巾纸',py:'qǐng gěi wǒ cān jīn zhǐ',en:'Please give me a napkin'},
-  {cn:'我要一杯热水',py:'wǒ yào yī bēi rè shuǐ',en:'I\'d like a glass of hot water'},
-  {cn:'我要一杯冰水',py:'wǒ yào yī bēi bīng shuǐ',en:'I\'d like a glass of iced water'},
-  {cn:'可以加热吗？',py:'kě yǐ jiā rè ma',en:'Can you heat this up?'},
-  {cn:'太慢了',py:'tài màn le',en:'It\'s taking too long'},
+'🚻 Requests & Facilities':[
+  {cn:'洗手间在哪里？',py:'xǐ shǒu jiān zài nǎ lǐ',en:'Where is the toilet?'},
+  {cn:'请给我筷子',py:'qǐng gěi wǒ kuài zi',en:'Chopsticks please'},
+  {cn:'请给我叉子',py:'qǐng gěi wǒ chā zi',en:'Fork please'},
+  {cn:'请给我勺子',py:'qǐng gěi wǒ sháo zi',en:'Spoon please'},
+  {cn:'我要一杯热水',py:'wǒ yào yī bēi rè shuǐ',en:'Hot water please'},
+  {cn:'我要一杯冰水',py:'wǒ yào yī bēi bīng shuǐ',en:'Iced water please'},
   {cn:'帮我换一个盘子',py:'bāng wǒ huàn yī gè pán zi',en:'Please change my plate'},
-  {cn:'有婴儿椅吗？',py:'yǒu yīng ér yǐ ma',en:'Do you have a high chair?'},
 ],
-'💳 Paying the Bill':[
+'💳 Paying':[
   {cn:'买单',py:'mǎi dān',en:'The bill please'},
-  {cn:'结账',py:'jié zhàng',en:'Check please'},
-  {cn:'多少钱？',py:'duō shǎo qián',en:'How much does it cost?'},
+  {cn:'多少钱？',py:'duō shǎo qián',en:'How much?'},
   {cn:'可以用信用卡吗？',py:'kě yǐ yòng xìn yòng kǎ ma',en:'Can I pay by credit card?'},
-  {cn:'可以用电子钱包吗？',py:'kě yǐ yòng diàn zǐ qián bāo ma',en:'Can I pay with e-wallet?'},
   {cn:'有没有收据？',py:'yǒu méi yǒu shōu jù',en:'Can I have a receipt?'},
-  {cn:'我请客',py:'wǒ qǐng kè',en:'It\'s my treat / I\'m paying'},
-  {cn:'AA制',py:'AA zhì',en:'Let\'s split the bill'},
+  {cn:'我请客',py:'wǒ qǐng kè',en:'It\'s my treat'},
+  {cn:'AA制',py:'AA zhì',en:'Split the bill'},
   {cn:'不用找了',py:'bù yòng zhǎo le',en:'Keep the change'},
   {cn:'包括服务费吗？',py:'bāo kuò fú wù fèi ma',en:'Is service charge included?'},
-  {cn:'账单有问题',py:'zhàng dān yǒu wèn tí',en:'There\'s a problem with the bill'},
 ],
-'🥂 Toasts & Table Customs':[
-  {cn:'干杯！',py:'gān bēi',en:'Cheers! (lit: dry cup — bottoms up)'},
+'🥂 Toasts & Customs':[
+  {cn:'干杯！',py:'gān bēi',en:'Cheers! (bottoms up)'},
   {cn:'随意！',py:'suí yì',en:'Drink at your own pace'},
-  {cn:'慢慢吃',py:'màn màn chī',en:'Eat slowly and enjoy (said at start of meal)'},
-  {cn:'请用',py:'qǐng yòng',en:'Please help yourself / start eating'},
-  {cn:'吃饱了',py:'chī bǎo le',en:'I\'m full / I\'ve eaten my fill'},
+  {cn:'慢慢吃',py:'màn màn chī',en:'Eat slowly and enjoy'},
+  {cn:'请用',py:'qǐng yòng',en:'Please help yourself'},
+  {cn:'吃饱了',py:'chī bǎo le',en:'I\'m full'},
   {cn:'真的很好吃',py:'zhēn de hěn hǎo chī',en:'This is really delicious'},
-  {cn:'下次再来',py:'xià cì zài lái',en:'We\'ll come again next time'},
-  {cn:'先喝汤',py:'xiān hē tāng',en:'Drink the soup first (Chinese custom)'},
-  {cn:'多吃一点',py:'duō chī yī diǎn',en:'Eat more! (host urging guest)'},
-  {cn:'很有特色',py:'hěn yǒu tè sè',en:'Very unique and distinctive'},
-  {cn:'回头客',py:'huí tóu kè',en:'I\'ll definitely come back!'},
+  {cn:'下次再来',py:'xià cì zài lái',en:'We\'ll come again'},
+  {cn:'先喝汤',py:'xiān hē tāng',en:'Drink the soup first (custom)'},
 ],
-'😋 Compliments & Reactions':[
+'😋 Compliments':[
   {cn:'太好吃了！',py:'tài hǎo chī le',en:'This is SO delicious!'},
   {cn:'好香啊',py:'hǎo xiāng a',en:'Smells so fragrant!'},
   {cn:'脆脆的',py:'cuì cuì de',en:'So crispy!'},
   {cn:'嫩嫩的',py:'nèn nèn de',en:'So tender!'},
   {cn:'鲜美',py:'xiān měi',en:'Fresh and delicious'},
-  {cn:'太辣了！',py:'tài là le',en:'Too spicy! (surprised exclamation)'},
-  {cn:'好甜',py:'hǎo tián',en:'So sweet!'},
+  {cn:'太辣了！',py:'tài là le',en:'Too spicy! (exclamation)'},
   {cn:'份量很足',py:'fèn liàng hěn zú',en:'Very generous portion'},
-  {cn:'摆盘很漂亮',py:'bǎi pán hěn piào liang',en:'Beautiful presentation'},
   {cn:'服务很好',py:'fú wù hěn hǎo',en:'The service is excellent'},
-  {cn:'环境很好',py:'huán jìng hěn hǎo',en:'The ambiance is lovely'},
   {cn:'下次带朋友来',py:'xià cì dài péng yǒu lái',en:'I\'ll bring friends next time'},
 ],
 };
 
 // ═══════════════════════════════════════════════
-// STATE
+// STATE — keep old key 'mmv4' so existing users keep their streak
 // ═══════════════════════════════════════════════
-let S=JSON.parse(localStorage.getItem('mmv4')||'{}');
-S.streak=S.streak||0;S.lastDate=S.lastDate||'';S.seenDates=S.seenDates||{};
-S.qR=S.qR||0;S.qT=S.qT||0;S.days=S.days||0;S.stageOverride=S.stageOverride||0;
-function save(){localStorage.setItem('mmv4',JSON.stringify(S));}
+const LS = 'mmv4';
+let S = {streak:0,lastDate:'',seenDates:{},qR:0,qT:0,days:0,seenMenu:[],seenPhrases:[],animCount:0};
+function loadS(){try{const r=localStorage.getItem(LS);if(r){const p=JSON.parse(r);S={...S,...p};}}catch(e){}}
+function saveS(){localStorage.setItem(LS,JSON.stringify(S));}
 
-// ═══════════════════════════════════════════════
-// STREAK — run FIRST so S.days is correct before building daily array
-// ═══════════════════════════════════════════════
+// Streak
 (function(){
   const today=new Date().toISOString().slice(0,10);
   if(S.lastDate!==today){
     const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
-    S.streak=S.lastDate===yest?S.streak+1:1;
-    S.lastDate=today;S.days++;S.seenDates[today]=true;save();
+    S.streak=(S.lastDate===yest)?S.streak+1:1;
+    S.lastDate=today;S.days++;S.seenDates[today]=true;saveS();
   }
 })();
 
 // ═══════════════════════════════════════════════
-// DAILY — respects stageOverride (1/2/3) or auto-progresses by user day count
+// TABS
 // ═══════════════════════════════════════════════
-let ci=0;
-const sorted=[...CHARS].sort((a,b)=>a.lv-b.lv);
-
-function buildDaily(){
-  if(S.stageOverride>0){
-    // User picked a specific stage — show random 5 from that stage
-    const pool=sorted.filter(c=>c.lv===S.stageOverride);
-    // Stable-ish selection: use day count as seed within the stage pool
-    const userDay=Math.max(0,(S.days||1)-1);
-    const stageOff=(userDay*5)%pool.length;
-    return Array.from({length:5},(_,i)=>pool[(stageOff+i)%pool.length]);
-  } else {
-    // Auto mode: advance through all chars in order by day count
-    const userDay=Math.max(0,(S.days||1)-1);
-    const off=(userDay*5)%sorted.length;
-    return Array.from({length:5},(_,i)=>sorted[(off+i)%sorted.length]);
-  }
+function tab(name,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  document.querySelector('.content').scrollTop=0;
+  if(name==='quiz')initQuiz();
+  if(name==='phrases')renderPhrases();
+  if(name==='progress')renderProgress();
 }
-let daily=buildDaily();
-
-function rCard(){
-  const c=daily[ci];
-  document.getElementById('bchar').textContent=c.ch;
-  document.getElementById('cpiny').textContent=c.py;
-  document.getElementById('cmean').textContent=c.en;
-  document.getElementById('cstk').textContent=c.stk?'Strokes: '+c.stk:'';
-  document.getElementById('cex').textContent=c.ex;
-  document.getElementById('cexpy').textContent=c.expy||'';
-  document.getElementById('cexe').textContent=c.exe;
-  document.getElementById('ctip').textContent=c.tip?'💡 '+c.tip:'';
-  document.getElementById('cnum').textContent=String(ci+1).padStart(2,'0');
-  document.getElementById('cn').textContent=ci+1;
-  document.getElementById('cpos').textContent=ci+1;
-  document.getElementById('pf').style.width=((ci+1)/5*100)+'%';
-  document.getElementById('pb').disabled=ci===0;
-  document.getElementById('fwb').disabled=ci===4;
-  document.getElementById('fwb').textContent=ci===4?'✓ Done':'Next →';
-  // Hanzi Writer
-  initHanziWriter(c.ch);
-  const lbls={1:'STAGE 1 · SINGLE CHARACTER',2:'STAGE 2 · TWO CHARACTERS',3:'STAGE 3 · FULL DISH NAME'};
-  const cls={1:'l1',2:'l2',3:'l3'};
-  const lv=document.getElementById('clvl');
-  lv.textContent=lbls[c.lv]||'STAGE '+c.lv;
-  lv.className='lvb '+(cls[c.lv]||'l3');
-}
-function chg(d){ci=Math.max(0,Math.min(4,ci+d));rCard();}
-function spkCur(){spk(daily[ci].ch);}
 
 // ═══════════════════════════════════════════════
 // SPEECH
@@ -611,49 +483,101 @@ function spk(t){
   if(v)u.voice=v;
   speechSynthesis.speak(u);
   toast('🔊 '+t);
+  if(!S.seenMenu.includes(t)){S.seenMenu.push(t);saveS();}
 }
 if(window.speechSynthesis)speechSynthesis.addEventListener('voiceschanged',()=>{});
 
 // ═══════════════════════════════════════════════
 // QUIZ
 // ═══════════════════════════════════════════════
-let qDone=false;
-function nxtQ(){
-  qDone=false;
-  const c=CHARS[Math.floor(Math.random()*CHARS.length)];
-  document.getElementById('qch').textContent=c.ch;
-  document.getElementById('qpy').textContent=c.py;
+let quizMode='meaning';
+let quizCurrent=null;
+let quizAnswered=false;
+
+function setQuizMode(mode,btn){
+  quizMode=mode;
+  document.querySelectorAll('.qmode').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  nextQuiz();
+}
+function initQuiz(){if(!quizCurrent)nextQuiz();}
+function spkQuiz(){if(quizCurrent)spk(quizCurrent.ch);}
+
+function nextQuiz(){
+  quizAnswered=false;
   document.getElementById('qfb').textContent='';
-  const opts=[c];
-  let tries=0;
-  while(opts.length<4&&tries<80){
-    const r=CHARS[Math.floor(Math.random()*CHARS.length)];
-    if(!opts.some(o=>o.en===r.en))opts.push(r);
-    tries++;
+  document.querySelectorAll('.qopt').forEach(o=>o.classList.remove('ok','no'));
+  const q=CHARS[Math.floor(Math.random()*CHARS.length)];
+  quizCurrent=q;
+  const charEl=document.getElementById('qch');
+  const pyEl=document.getElementById('qpy');
+  const promptEl=document.getElementById('qprompt');
+  charEl.style.fontSize='';
+  if(quizMode==='meaning'){
+    charEl.textContent=q.ch;pyEl.textContent=q.py;promptEl.textContent='What does this mean?';
+  } else if(quizMode==='reading'){
+    charEl.textContent=q.en;charEl.style.fontSize='22px';pyEl.textContent='';promptEl.textContent='How do you write/say this in Chinese?';
+  } else {
+    charEl.textContent='🔊';charEl.style.fontSize='72px';pyEl.textContent='';promptEl.textContent='Listen and choose the correct meaning';
+    setTimeout(()=>spk(q.ch),300);
   }
-  opts.sort(()=>Math.random()-.5);
+  const wrong=CHARS.filter(x=>x.ch!==q.ch&&x.en!==q.en).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[...wrong,q].sort(()=>Math.random()-.5);
   const el=document.getElementById('qopts');el.innerHTML='';
   opts.forEach(o=>{
-    const b=document.createElement('button');b.className='qopt';b.textContent=o.en;
-    b.onclick=()=>{
-      if(qDone)return;qDone=true;S.qT++;
-      if(o.en===c.en){b.classList.add('ok');S.qR++;document.getElementById('qfb').textContent='✓ Correct! '+c.en;document.getElementById('qfb').style.color='#27ae60';}
-      else{b.classList.add('no');document.getElementById('qfb').textContent='✗ It\'s "'+c.en+'"';document.getElementById('qfb').style.color='#c0392b';[...el.children].forEach(x=>{if(x.textContent===c.en)x.classList.add('ok');});}
-      document.getElementById('qsc').textContent=S.qR;document.getElementById('qtot').textContent=S.qT;save();
-    };
+    const b=document.createElement('button');b.className='qopt';
+    if(quizMode==='reading'){
+      b.innerHTML='<span style="font-family:\'Noto Serif SC\',serif;font-size:20px">'+o.ch+'</span><br><span style="font-size:10px;color:var(--muted)">'+o.py+'</span>';
+    } else {b.textContent=o.en;}
+    b.onclick=()=>checkQuiz(o.ch===q.ch,b,q);
     el.appendChild(b);
   });
 }
 
+function checkQuiz(correct,btn,q){
+  if(quizAnswered)return;
+  quizAnswered=true;S.qT++;
+  document.querySelectorAll('.qopt').forEach(o=>o.onclick=null);
+  const fb=document.getElementById('qfb');
+  if(correct){
+    btn.classList.add('ok');S.qR++;
+    fb.textContent='✓ Correct! '+q.en;fb.style.color='#27ae60';
+  } else {
+    btn.classList.add('no');
+    fb.textContent='✗ It\'s "'+q.en+'"';fb.style.color='#c0392b';
+    document.querySelectorAll('.qopt').forEach(o=>{
+      if(quizMode==='reading'){if(o.querySelector('span')&&o.querySelector('span').textContent===q.ch)o.classList.add('ok');}
+      else{if(o.textContent===q.en)o.classList.add('ok');}
+    });
+  }
+  document.getElementById('qsc').textContent=S.qR;
+  document.getElementById('qtot').textContent=S.qT;
+  saveS();
+  setTimeout(nextQuiz,1500);
+}
+
 // ═══════════════════════════════════════════════
-// MENU
+// MENU — with inline HanziWriter animation
 // ═══════════════════════════════════════════════
 const cats=['All',...new Set(CHARS.map(c=>c.cat))];
 let aCat='All';
+let menuRendered=false;
+
+// Track which card has animation open + its writer instance
+let activeAnimCard=null;
+let activeWriter=null;
+
 function rCatTabs(){
-  document.getElementById('ctabs').innerHTML='';
-  cats.forEach(c=>{const b=document.createElement('button');b.className='ctab'+(c===aCat?' on':'');b.textContent=c;b.onclick=()=>{aCat=c;rCatTabs();rMenu();};document.getElementById('ctabs').appendChild(b);});
+  if(menuRendered)return;
+  const el=document.getElementById('ctabs');el.innerHTML='';
+  cats.forEach(c=>{
+    const b=document.createElement('button');b.className='ctab'+(c===aCat?' on':'');
+    b.textContent=c;
+    b.onclick=()=>{aCat=c;document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('on'));b.classList.add('on');rMenu();};
+    el.appendChild(b);
+  });
 }
+
 function rMenu(){
   const q=(document.getElementById('msrch').value||'').toLowerCase();
   const items=CHARS.filter(c=>{
@@ -663,149 +587,240 @@ function rMenu(){
   });
   document.getElementById('mcount').textContent=items.length;
   const g=document.getElementById('mgrid');g.innerHTML='';
-  items.forEach(c=>{
-    const div=document.createElement('div');div.className='mi';
-    const safe=c.ch.replace(/'/g,"\\'");
+  activeAnimCard=null;activeWriter=null;
+  items.forEach((c,i)=>{
     const tag=getTag(c);
-    div.innerHTML=`<div class="mchar">${c.ch}</div>
-    <div class="minfo"><div class="mpinyin">${c.py}</div><div class="men">${c.en}</div><div class="mdesc">${c.desc}</div>${tag}</div>
-    <button class="sspk" onclick="event.stopPropagation();spk('${safe}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>`;
-    div.onclick=()=>spk(c.ch);g.appendChild(div);
+    const id='mi-'+i;
+    const div=document.createElement('div');div.className='mi';div.id=id;
+    const safe=c.ch.replace(/'/g,"\\'");
+    div.innerHTML=`
+      <div class="mi-top">
+        <div class="mchar">${c.ch}</div>
+        <div class="minfo">
+          <div class="mpinyin">${c.py}</div>
+          <div class="men">${c.en}</div>
+          <div class="mdesc">${c.desc}${tag}</div>
+        </div>
+        <div class="mi-btns">
+          <button class="anim-btn" id="abtn-${id}" title="Animate strokes" onclick="event.stopPropagation();toggleAnim('${id}','${safe}')">✍</button>
+          <button class="sspk" onclick="event.stopPropagation();spk('${safe}')" title="Hear pronunciation">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="mi-anim" id="anim-${id}">
+        <div class="hz-chars" id="hz-chars-${id}"></div>
+        <div class="hz-controls">
+          <button class="hz-btn primary" onclick="hzAnim('${id}')">▶ Animate</button>
+          <button class="hz-btn" onclick="hzQuizCard('${id}')">✏ Practice</button>
+          <button class="hz-btn" onclick="hzShowCard('${id}')">👁 Show</button>
+        </div>
+        <div class="hz-hint" id="hz-hint-${id}">Tap a character above, then Animate to see its stroke order</div>
+      </div>`;
+    div.onclick=()=>spk(c.ch);
+    g.appendChild(div);
   });
-  if(!items.length)g.innerHTML='<p style="font-size:13px;color:var(--muted);padding:1rem">No results found.</p>';
+  menuRendered=true;
+  if(!q&&aCat==='All')menuRendered=false; // re-render allowed on search/filter
+  menuRendered=false; // always allow re-render (tabs rendered separately)
 }
+
 function getTag(c){
-  if(/Tofu|Sprout|Spinach|Cabbage|Eggplant|Lotus|Fungus|Melon|Mushroom|Broccoli|Vegetable/i.test(c.en))return '<span class="mtag tv">🌿 Veg</span>';
-  if(/Spicy|Sichuan|Mapo|Kung Pao|Numbing|Pickled Fish|Hot.Sour/i.test(c.en))return '<span class="mtag th">🌶️ Spicy</span>';
-  if(/Fish|Prawn|Shrimp|Crab|Squid|Scallop|Oyster|Sea Cucumber|Grouper|Seafood/i.test(c.en))return '<span class="mtag ts">🐟 Seafood</span>';
-  if(/Peking|Kung Pao|Mapo|Char Siu|Egg Tart|Har Gow|Duck|Hotpot|Hofun/i.test(c.en))return '<span class="mtag tp">⭐ Popular</span>';
-  return '';
+  let t='';
+  if(/Tofu|Sprout|Spinach|Cabbage|Eggplant|Lotus|Fungus|Melon|Mushroom|Broccoli|Vegetable|Water Spinach/i.test(c.en))t+='<span class="mtag tv">🌿 Veg</span>';
+  if(/Spicy|Sichuan|Mapo|Kung Pao|Numbing|Pickled Fish|Hot.Sour/i.test(c.en))t+='<span class="mtag th">🌶️ Spicy</span>';
+  if(/Fish|Prawn|Shrimp|Crab|Squid|Scallop|Oyster|Sea Cucumber|Grouper/i.test(c.en))t+='<span class="mtag ts">🐟 Seafood</span>';
+  if(/Peking|Kung Pao|Char Siu|Egg Tart|Har Gow|Duck|Hofun|Mapo|Hotpot/i.test(c.en))t+='<span class="mtag tp">⭐ Popular</span>';
+  return t;
+}
+
+// writers map: "id-charIndex" → HanziWriter instance
+// activeChar map: id → currently selected charIndex
+const writers={};
+const activeChar={};
+
+function toggleAnim(id, char){
+  const panel=document.getElementById('anim-'+id);
+  const btn=document.getElementById('abtn-'+id);
+  const isOpen=panel.classList.contains('open');
+
+  // Close all open panels
+  document.querySelectorAll('.mi-anim.open').forEach(p=>{
+    p.classList.remove('open');
+    const prevId=p.id.replace('anim-','');
+    const prevBtn=document.getElementById('abtn-'+prevId);
+    if(prevBtn)prevBtn.classList.remove('active');
+  });
+
+  if(isOpen)return;
+
+  panel.classList.add('open');
+  btn.classList.add('active');
+
+  // Build character blocks if not yet done
+  const charsEl=document.getElementById('hz-chars-'+id);
+  if(charsEl.children.length===0){
+    // Split char into individual characters (skip spaces)
+    const chars=[...char].filter(c=>c.trim());
+    chars.forEach((c,idx)=>{
+      const block=document.createElement('div');
+      block.className='hz-char-block'+(idx===0?' active':'');
+      block.id='hzblock-'+id+'-'+idx;
+      block.innerHTML=`
+        <div class="hz-target-wrap" onclick="selectChar('${id}',${idx})">
+          <div id="hz-${id}-${idx}" style="width:110px;height:110px;cursor:pointer"></div>
+        </div>
+        <div class="hz-char-label">${c}</div>`;
+      charsEl.appendChild(block);
+    });
+    activeChar[id]=0;
+    // Init and auto-animate first character
+    initCharWriter(id,0,chars[0]);
+  } else {
+    // Already built — animate current active char
+    const ci=activeChar[id]||0;
+    const w=writers[id+'-'+ci];
+    if(w){w.animateCharacter();document.getElementById('hz-hint-'+id).textContent='Watch the stroke order carefully…';}
+  }
+}
+
+function initCharWriter(id, idx, char){
+  const key=id+'-'+idx;
+  if(writers[key])return; // already created
+  const targetId='hz-'+id+'-'+idx;
+  const el=document.getElementById(targetId);
+  if(!el)return;
+  try{
+    writers[key]=HanziWriter.create(targetId,char,{
+      width:110,height:110,padding:8,
+      strokeColor:'#8B1A1A',radicalColor:'#D4A847',
+      outlineColor:'#e8d5a3',drawingColor:'#8B1A1A',
+      drawingWidth:4,showOutline:true,showCharacter:false,
+      strokeAnimationSpeed:0.9,delayBetweenStrokes:280,
+      onLoadCharDataError:function(){
+        document.getElementById('hz-hint-'+id).textContent='"'+char+'" — stroke data not available';
+      }
+    });
+    setTimeout(()=>{
+      if(writers[key]){
+        writers[key].animateCharacter();
+        document.getElementById('hz-hint-'+id).textContent='Animating "'+char+'" — watch the stroke order…';
+        S.animCount=(S.animCount||0)+1;saveS();
+      }
+    },300);
+  }catch(e){
+    document.getElementById('hz-hint-'+id).textContent='Animation not available for "'+char+'"';
+  }
+}
+
+function selectChar(id, idx){
+  // Switch active character block
+  document.querySelectorAll('[id^="hzblock-'+id+'-"]').forEach(b=>b.classList.remove('active'));
+  const block=document.getElementById('hzblock-'+id+'-'+idx);
+  if(block)block.classList.add('active');
+  activeChar[id]=idx;
+
+  // Get the character text from the label
+  const label=block?block.querySelector('.hz-char-label'):null;
+  const char=label?label.textContent:'';
+
+  // Init writer if needed, otherwise just animate
+  const key=id+'-'+idx;
+  if(!writers[key]){
+    initCharWriter(id,idx,char);
+  } else {
+    writers[key].animateCharacter();
+    document.getElementById('hz-hint-'+id).textContent='Animating "'+char+'" — watch the stroke order…';
+  }
+}
+
+function hzAnim(id){
+  const ci=activeChar[id]||0;
+  const w=writers[id+'-'+ci];
+  if(!w)return;
+  w.animateCharacter({onComplete:function(){
+    document.getElementById('hz-hint-'+id).textContent='Done! Tap Animate to replay, or Practice to trace it';
+  }});
+  document.getElementById('hz-hint-'+id).textContent='Animating…';
+}
+
+function hzQuizCard(id){
+  const ci=activeChar[id]||0;
+  const w=writers[id+'-'+ci];
+  if(!w)return;
+  document.getElementById('hz-hint-'+id).textContent='Draw each stroke in order — follow the hint dot';
+  w.quiz({
+    onMistake:function(s){document.getElementById('hz-hint-'+id).textContent='Try stroke '+(s.strokeNum+1)+' again';},
+    onCorrectStroke:function(s){document.getElementById('hz-hint-'+id).textContent='Stroke '+(s.strokeNum+1)+' correct! '+s.strokesRemaining+' remaining';},
+    onComplete:function(s){document.getElementById('hz-hint-'+id).textContent=s.totalMistakes===0?'Perfect! No mistakes!':'Done! '+s.totalMistakes+' mistake'+(s.totalMistakes===1?'':'s');}
+  });
+}
+
+function hzShowCard(id){
+  const ci=activeChar[id]||0;
+  const w=writers[id+'-'+ci];
+  if(!w)return;
+  w.showCharacter();
+  document.getElementById('hz-hint-'+id).textContent='Character shown. Tap Animate to see stroke order.';
 }
 
 // ═══════════════════════════════════════════════
 // PHRASES
 // ═══════════════════════════════════════════════
-const pCats=Object.keys(PHRASES);let aPCat=pCats[0];
-function rPCats(){
-  document.getElementById('ptabs').innerHTML='';
-  pCats.forEach(c=>{const b=document.createElement('button');b.className='ptab'+(c===aPCat?' on':'');b.textContent=c;b.onclick=()=>{aPCat=c;rPCats();rPhrases();};document.getElementById('ptabs').appendChild(b);});
+const pCats=Object.keys(PHRASES);let aPCat=pCats[0];let phraseTabsRendered=false;
+function renderPhrases(){
+  if(!phraseTabsRendered){
+    const el=document.getElementById('ptabs');
+    pCats.forEach(c=>{
+      const b=document.createElement('button');b.className='ptab'+(c===aPCat?' on':'');b.textContent=c;
+      b.onclick=()=>{aPCat=c;document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderPhraseList();};
+      el.appendChild(b);
+    });
+    phraseTabsRendered=true;
+  }
+  renderPhraseList();
 }
-function rPhrases(){
+function renderPhraseList(){
   const list=document.getElementById('plist');list.innerHTML='';
   (PHRASES[aPCat]||[]).forEach(p=>{
     const d=document.createElement('div');d.className='pcard';
     const safe=p.cn.replace(/'/g,"\\'");
     d.innerHTML=`<div class="pcn" onclick="spk('${safe}')">${p.cn}</div>
-    <div class="pdet"><div class="ppy">${p.py}</div><div class="pen">${p.en}</div></div>
-    <button class="sspk" onclick="spk('${safe}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>`;
+      <div class="pdet"><div class="ppy">${p.py}</div><div class="pen">${p.en}</div></div>
+      <button class="sspk" onclick="spk('${safe}')"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>`;
+    d.onclick=()=>spk(p.cn);
     list.appendChild(d);
+    if(!S.seenPhrases.includes(p.cn)){S.seenPhrases.push(p.cn);saveS();}
   });
 }
 
 // ═══════════════════════════════════════════════
 // PROGRESS
 // ═══════════════════════════════════════════════
-function rProg(){
-  const pct=S.qT?Math.round(S.qR/S.qT*100):0;
+function renderProgress(){
+  const totalMenu=CHARS.length;
+  const totalPhr=Object.values(PHRASES).reduce((a,c)=>a+c.length,0);
+  const seenM=S.seenMenu.length,seenP=S.seenPhrases.length;
+  const acc=S.qT>0?Math.round(S.qR/S.qT*100)+'%':'—';
   document.getElementById('sd').textContent=S.days;
-  document.getElementById('sch').textContent=Object.keys(S.seenDates).length*5;
-  document.getElementById('spct').textContent=pct+'%';
   document.getElementById('sstr').textContent=S.streak;
-  const g=document.getElementById('lg');g.innerHTML='';
-  daily.forEach(c=>{
-    const d=document.createElement('div');
-    d.style.cssText='padding:10px 12px;background:white;border:1px solid var(--bdr);border-radius:10px;text-align:center;cursor:pointer';
-    d.innerHTML=`<div style="font-family:Noto Serif SC,serif;font-size:20px;line-height:1.2">${c.ch}</div><div style="font-size:10px;color:var(--red);margin-top:3px">${c.py}</div>`;
-    d.onclick=()=>spk(c.ch);g.appendChild(d);
-  });
-}
-function resetP(){
-  if(!confirm('Reset all progress?'))return;
-  S={streak:0,lastDate:'',seenDates:{},qR:0,qT:0,days:0};save();rProg();
-  document.getElementById('qsc').textContent='0';document.getElementById('qtot').textContent='0';document.getElementById('sc').textContent='0';toast('Progress reset');
-}
-
-// ═══════════════════════════════════════════════
-// ===================================================
-// HANZI WRITER - animated stroke order
-// ===================================================
-let hzWriter=null;
-function initHanziWriter(char){
-  const el=document.getElementById('hz-target');
-  if(!el)return;
-  el.innerHTML='';
-  document.getElementById('hz-hint').textContent='Tap Animate to see the correct stroke order';
-  if(typeof HanziWriter==='undefined'){
-    el.innerHTML='<div style="font-family:Noto Serif SC,serif;font-size:60px;line-height:130px;text-align:center;color:var(--ink)">'+char+'</div>';
-    document.getElementById('hz-hint').textContent='Stroke animation needs internet connection';
-    return;
-  }
-  try{
-    hzWriter=HanziWriter.create('hz-target',char,{
-      width:130,height:130,padding:10,
-      strokeColor:'#8B1A1A',radicalColor:'#D4A847',
-      outlineColor:'#e8d5a3',drawingColor:'#8B1A1A',
-      drawingWidth:4,showOutline:true,showCharacter:false,
-      strokeAnimationSpeed:0.8,delayBetweenStrokes:300,
-    });
-  }catch(e){
-    el.innerHTML='<div style="font-family:Noto Serif SC,serif;font-size:60px;line-height:130px;text-align:center;color:var(--ink)">'+char+'</div>';
-  }
-}
-function hzAnimate(){
-  if(!hzWriter)return;
-  document.getElementById('hz-hint').textContent='Watch the stroke order carefully...';
-  hzWriter.animateCharacter({onComplete:function(){
-    document.getElementById('hz-hint').textContent='Tap Animate again to replay, or Practice to trace it';
-  }});
-}
-function hzQuiz(){
-  if(!hzWriter)return;
-  document.getElementById('hz-hint').textContent='Draw each stroke in order - follow the hint dot';
-  hzWriter.quiz({
-    onMistake:function(s){document.getElementById('hz-hint').textContent='Try stroke '+(s.strokeNum+1)+' again';},
-    onCorrectStroke:function(s){document.getElementById('hz-hint').textContent='Stroke '+(s.strokeNum+1)+' correct! '+s.strokesRemaining+' remaining';},
-    onComplete:function(s){document.getElementById('hz-hint').textContent=s.totalMistakes===0?'Perfect! No mistakes!':'Done! '+s.totalMistakes+' mistake'+(s.totalMistakes===1?'':'s');}
-  });
-}
-function hzShow(){
-  if(!hzWriter)return;
-  hzWriter.showCharacter();
-  document.getElementById('hz-hint').textContent='Character shown. Tap Animate to see stroke order.';
-}
-
-// STAGE SELECTOR
-// ═══════════════════════════════════════════════
-function setStage(n){
-  S.stageOverride=n;save();
-  daily=buildDaily();
-  ci=0;rCard();
-  updateStageButtons();
-  const labels={0:'Auto-progress mode',1:'Stage 1 — Single Characters',2:'Stage 2 — Two-character Words',3:'Stage 3 — Full Dish Names'};
-  toast('📚 '+labels[n]);
-}
-function updateStageButtons(){
-  [0,1,2,3].forEach(n=>{
-    const btn=document.getElementById('sb'+n);
-    if(btn)btn.classList.toggle('on',S.stageOverride===n);
-  });
-}
-
-// ═══════════════════════════════════════════════
-// STREAK & NAV
-// ═══════════════════════════════════════════════
-function updateStreak(){
-  // S.days already incremented at top of script if new day. Just update the badge.
+  document.getElementById('spct').textContent=acc;
+  document.getElementById('sanim').textContent=S.animCount||0;
+  document.getElementById('pMenuFrac').textContent=seenM+'/'+totalMenu;
+  document.getElementById('pMenuBar').style.width=(seenM/totalMenu*100)+'%';
+  document.getElementById('pPhrFrac').textContent=seenP+'/'+totalPhr;
+  document.getElementById('pPhrBar').style.width=(seenP/totalPhr*100)+'%';
   document.getElementById('sc').textContent=S.streak;
 }
-function tab(name,btn){
-  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  document.getElementById(name).classList.add('active');
-  if(btn)btn.classList.add('active');
-  if(name==='quiz')nxtQ();
-  if(name==='progress')rProg();
+
+function resetP(){
+  if(!confirm('Reset all progress?'))return;
+  localStorage.removeItem(LS);location.reload();
 }
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
 function toast(m){
   const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);
 }
@@ -813,11 +828,11 @@ function toast(m){
 // ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
-document.getElementById('dlbl').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-updateStreak();rCard();rCatTabs();rMenu();rPCats();rPhrases();updateStageButtons();
-setTimeout(function(){initHanziWriter(daily[0].ch);},600);
-// Auto-unregister any previously installed service worker to ensure fresh loads
-if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(regs=>{regs.forEach(r=>r.unregister());});}
+if('serviceWorker' in navigator)navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.unregister()));
+loadS();
+document.getElementById('sc').textContent=S.streak;
+rCatTabs();
+rMenu();
 </script>
 </body>
 </html>
