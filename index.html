@@ -134,6 +134,57 @@ nav::-webkit-scrollbar{display:none}
 .prog-bar-track{background:var(--paper2);height:6px;border-radius:3px;overflow:hidden}
 .prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:3px;transition:width .4s}
 
+/* ── FLASHCARD ── */
+.fc-wrap{display:flex;flex-direction:column;align-items:center;padding:.5rem 0 1rem}
+.fc-progress-row{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:1rem}
+.fc-prog-track{flex:1;background:var(--paper2);height:6px;border-radius:3px;overflow:hidden}
+.fc-prog-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:3px;transition:width .4s}
+.fc-counter{font-size:11px;color:var(--muted);white-space:nowrap}
+/* The card itself */
+.fc-card{
+  width:100%;max-width:420px;
+  perspective:1000px;cursor:pointer;
+  height:260px;margin-bottom:1.2rem;
+}
+.fc-card-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .45s ease;
+}
+.fc-card.flipped .fc-card-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  border-radius:16px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:1.4rem;
+  border:1px solid var(--bdr);
+  box-shadow:var(--shd);
+}
+.fc-front{
+  background:var(--paper);
+  border-top:4px solid var(--red);
+}
+.fc-back{
+  background:linear-gradient(160deg,#fffdf5 0%,#fff8e8 100%);
+  border-top:4px solid var(--gold);
+  transform:rotateY(180deg);
+}
+.fc-char{font-family:'Noto Serif SC',serif;font-size:96px;color:var(--ink);line-height:1;margin-bottom:.5rem}
+.fc-hint{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.fc-pinyin{font-size:22px;color:var(--red);font-weight:300;letter-spacing:.06em;margin-bottom:.4rem}
+.fc-english{font-size:17px;color:var(--ink);font-weight:500;margin-bottom:.3rem;text-align:center}
+.fc-cat{font-size:10px;color:var(--muted);margin-bottom:.5rem;letter-spacing:.06em}
+.fc-desc{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;max-width:280px}
+.fc-tap-hint{font-size:10px;color:var(--muted);margin-top:.6rem;letter-spacing:.08em}
+/* Buttons row */
+/* Stats bar */
+/* Filter row */
+.fc-filter{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:1rem;width:100%;max-width:420px}
+.fc-ftab{background:white;border:1px solid var(--bdr);border-radius:20px;padding:4px 12px;font-size:11px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;color:var(--muted);transition:all .2s}
+.fc-ftab.on,.fc-ftab:hover{background:var(--red);color:white;border-color:var(--red)}
 /* ── TOAST ── */
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(26,16,8,.92);color:white;padding:10px 20px;border-radius:25px;font-size:13px;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none}
 .toast.on{transform:translateX(-50%) translateY(0)}
@@ -157,7 +208,8 @@ nav::-webkit-scrollbar{display:none}
 
 <!-- NAV -->
 <nav>
-  <button class="nav-btn active" onclick="tab('menu',this)">🍜 Menu</button>
+  <button class="nav-btn active" onclick="tab('flash',this)">🃏 Flashcards</button>
+  <button class="nav-btn" onclick="tab('menu',this)">🍜 Menu</button>
   <button class="nav-btn" onclick="tab('quiz',this)">🧠 Quiz</button>
   <button class="nav-btn" onclick="tab('phrases',this)">💬 Phrases</button>
   <button class="nav-btn" onclick="tab('progress',this)">📊 Progress</button>
@@ -166,8 +218,44 @@ nav::-webkit-scrollbar{display:none}
 <!-- CONTENT -->
 <div class="content">
 
+  <!-- FLASHCARDS -->
+  <div class="page active" id="page-flash">
+    <div class="sh"><span class="orn">❖</span><h2>Flashcards</h2><span class="orn">❖</span></div>
+    <div class="fc-wrap" id="fcWrap">
+      <!-- filter tabs -->
+      <div class="fc-filter" id="fcFilter"></div>
+      <!-- progress bar -->
+      <div class="fc-progress-row" style="width:100%;max-width:420px">
+        <div class="fc-prog-track"><div class="fc-prog-fill" id="fcProgFill" style="width:0%"></div></div>
+        <div class="fc-counter" id="fcCounter">0 / 0</div>
+      </div>
+      <!-- the card -->
+      <div class="fc-card" id="fcCard" onclick="fcFlip()">
+        <div class="fc-card-inner" id="fcCardInner">
+          <div class="fc-front">
+            <div class="fc-char" id="fcChar">食</div>
+            <div class="fc-hint">Tap to reveal</div>
+          </div>
+          <div class="fc-back">
+            <div class="fc-pinyin" id="fcPinyin">shí</div>
+            <div class="fc-english" id="fcEnglish">Food / Eat</div>
+            <div class="fc-cat" id="fcCat">🍳 Cooking</div>
+            <div class="fc-desc" id="fcDesc">The character for food and eating</div>
+            <div class="fc-tap-hint">How well did you know this?</div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-tap-hint-row" id="fcTapHint" style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:.8rem">Tap the card to reveal</div>
+      <div style="display:flex;gap:8px;width:100%;max-width:420px">
+        <button onclick="fcShuffle()" style="flex:1;padding:9px;background:white;border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-size:12px;color:var(--muted);font-family:'Noto Sans SC',sans-serif">🔀 Shuffle</button>
+        <button onclick="fcRestart()" style="flex:1;padding:9px;background:white;border:1px solid var(--bdr);border-radius:8px;cursor:pointer;font-size:12px;color:var(--muted);font-family:'Noto Sans SC',sans-serif">↺ Restart</button>
+        <button onclick="spk(fcDeck[fcIdx]&&fcDeck[fcIdx].ch)" style="flex:1;padding:9px;background:var(--red);border:none;border-radius:8px;cursor:pointer;font-size:12px;color:white;font-family:'Noto Sans SC',sans-serif">🔊 Hear</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MENU -->
-  <div class="page active" id="page-menu">
+  <div class="page" id="page-menu">
     <div class="sh"><span class="orn">❖</span><h2>Full Menu Reference</h2><span class="orn">❖</span></div>
     <input class="msrch" id="msrch" placeholder="Search English, Chinese or pinyin…" oninput="rMenu()">
     <div class="ctabs" id="ctabs"></div>
@@ -465,6 +553,7 @@ function tab(name,btn){
   document.getElementById('page-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
   document.querySelector('.content').scrollTop=0;
+  if(name==='flash')initFlash();
   if(name==='quiz')initQuiz();
   if(name==='phrases')renderPhrases();
   if(name==='progress')renderProgress();
@@ -826,6 +915,130 @@ function toast(m){
 }
 
 // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════════════════════
+let fcDeck=[];
+let fcIdx=0;
+let fcFlipped=false;
+let fcFilter='1';
+
+function fcGetPool(){
+  if(fcFilter==='All') return [...CHARS];
+  if(fcFilter==='1')  return CHARS.filter(c=>[...c.ch].length===1);
+  if(fcFilter==='2')  return CHARS.filter(c=>[...c.ch].length===2);
+  if(fcFilter==='3+') return CHARS.filter(c=>[...c.ch].length>=3);
+  return [...CHARS];
+}
+
+function fcBuildDeck(){
+  const pool=fcGetPool();
+  // Build weighted deck: repeat cards by weight, then shuffle
+  let weighted=[];
+  pool.forEach(c=>{
+    weighted.push(c);
+  });
+  // Fisher-Yates shuffle
+  for(let i=weighted.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [weighted[i],weighted[j]]=[weighted[j],weighted[i]];
+  }
+  // Deduplicate consecutive same card
+  const deck=[];
+  weighted.forEach(c=>{if(!deck.length||deck[deck.length-1].ch!==c.ch)deck.push(c);});
+  fcDeck=deck;
+  fcIdx=0;
+}
+
+function fcInitFilter(){
+  const el=document.getElementById('fcFilter');
+  el.innerHTML='';
+  const groups=[
+    {key:'1',   label:'Single character'},
+    {key:'2',   label:'Two characters'},
+    {key:'3+',  label:'Three or more'},
+    {key:'All', label:'All'},
+  ];
+  groups.forEach(g=>{
+    const b=document.createElement('button');
+    b.className='fc-ftab'+(g.key===fcFilter?' on':'');
+    b.textContent=g.label;
+    b.onclick=()=>{
+      fcFilter=g.key;
+      document.querySelectorAll('.fc-ftab').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      fcRestart();
+    };
+    el.appendChild(b);
+  });
+}
+
+function fcShowCard(){
+  if(!fcDeck.length)return;
+  const c=fcDeck[fcIdx];
+  // Reset flip
+  fcFlipped=false;
+  document.getElementById('fcCard').classList.remove('flipped');
+  document.getElementById('fcTapHint').textContent='Tap the card to reveal';
+  // Fill front
+  document.getElementById('fcChar').textContent=c.ch;
+  // Fill back
+  document.getElementById('fcPinyin').textContent=c.py;
+  document.getElementById('fcEnglish').textContent=c.en;
+  document.getElementById('fcCat').textContent=c.cat;
+  document.getElementById('fcDesc').textContent=c.desc||'';
+  // Progress
+  const total=fcDeck.length;
+  const pct=total?Math.round(fcIdx/total*100):0;
+  document.getElementById('fcProgFill').style.width=pct+'%';
+  document.getElementById('fcCounter').textContent=fcIdx+' / '+total;
+}
+
+function fcFlip(){
+  if(fcFlipped)return;
+  fcFlipped=true;
+  document.getElementById('fcCard').classList.add('flipped');
+  document.getElementById('fcTapHint').textContent='Next card in a moment…';
+  const c=fcDeck[fcIdx];
+  if(c)spk(c.ch);
+  // Auto-advance after 1.4s
+  setTimeout(()=>fcAdvance(),1400);
+}
+
+function fcAdvance(){
+  fcIdx++;
+  if(fcIdx>=fcDeck.length){
+    document.getElementById('fcChar').textContent='🎉';
+    document.getElementById('fcTapHint').textContent='Deck complete! Reshuffling…';
+    document.getElementById('fcProgFill').style.width='100%';
+    document.getElementById('fcCounter').textContent=fcDeck.length+' / '+fcDeck.length;
+    document.getElementById('fcCard').classList.remove('flipped');
+    setTimeout(()=>{fcBuildDeck();fcShowCard();},1800);
+  } else {
+    fcShowCard();
+  }
+}
+
+
+
+function fcShuffle(){
+  fcBuildDeck();
+  fcShowCard();
+  toast('🔀 Deck shuffled');
+}
+
+function fcRestart(){
+  fcBuildDeck();
+  fcShowCard();
+}
+
+function initFlash(){
+  fcInitFilter();
+  fcBuildDeck();
+  fcShowCard();
+}
+
+// ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
 if('serviceWorker' in navigator)navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.unregister()));
@@ -833,6 +1046,7 @@ loadS();
 document.getElementById('sc').textContent=S.streak;
 rCatTabs();
 rMenu();
+initFlash();
 </script>
 </body>
 </html>
