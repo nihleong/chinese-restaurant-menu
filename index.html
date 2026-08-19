@@ -1123,14 +1123,16 @@ function fcShowCard(){
 }
 
 function fcFlip(){
-  if(fcFlipped)return;
+  if(fcFlipped){
+    // Already flipped — tap again to advance
+    fcAdvance();
+    return;
+  }
   fcFlipped=true;
   document.getElementById('fcCard').classList.add('flipped');
-  document.getElementById('fcTapHint').textContent='Next card in a moment…';
+  document.getElementById('fcTapHint').textContent='Tap again to go to next card';
   const c=fcDeck[fcIdx];
   if(c)spk(c.ch);
-  // Auto-advance after 1.4s
-  setTimeout(()=>fcAdvance(),1400);
 }
 
 function fcAdvance(){
